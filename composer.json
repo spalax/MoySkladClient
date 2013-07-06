@@ -1,0 +1,31 @@
+{
+    "name": "milcrew/zf2-client-moysklad",
+    "description": "Zend Framework 2 module for moysklad service",
+    "authors": [
+        {
+            "name": "Milcrew",
+            "email": "milcrew@gmail.com"
+        },
+        {
+            "name": "Milotskiy Alexey",
+            "email": "spalaxinco@gmail.com"
+        }
+    ],
+    "keywords": [
+        "api", "client"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=5.3",
+        "zendframework/zendframework": ">=2.0.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "Zf2ClientMoysklad": "src/"
+        },
+        "classmap": [
+            "./Module.php"
+        ]
+    },
+    "minimum-stability": "dev"
+}
