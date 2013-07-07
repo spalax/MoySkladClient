@@ -42,7 +42,6 @@ class GenericMapper implements MapperInterface
         if ($response->isClientError() || empty($body)) {
             return array();
         }
-
         return new \SimpleXMLIterator($body);
     }
 

@@ -3,22 +3,20 @@
 namespace Zf2ClientMoysklad\Repository;
 
 use Zf2ClientMoysklad\Entity\EntityInterface;
-use Zf2ClientMoysklad\EntityManager;
 use Zf2ClientMoysklad\Mapper\MapperInterface;
+use Zf2ClientMoysklad\Service\EntityFiller;
 
 abstract class RepositoryAbstract
 {
     protected $entity = null;
-    protected $entityManager = null;
     protected $mapper = null;
-    protected $annotations = array();
+    protected $filler = null;
 
-    public function __construct($entity, EntityManager $entityManager, MapperInterface $mapper, array $annotations)
+    public function __construct($entity, MapperInterface $mapper, EntityFiller $filler)
     {
         $this->entity = $entity;
-        $this->entityManager = $entityManager;
+        $this->filler = $filler;
         $this->mapper = $mapper;
-        $this->annotations = $annotations;
     }
 
     /**
