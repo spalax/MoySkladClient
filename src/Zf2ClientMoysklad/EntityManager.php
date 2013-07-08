@@ -3,39 +3,45 @@ namespace Zf2ClientMoysklad;
 
 use Zend\Code\Annotation\AnnotationManager;
 use Zf2ClientMoysklad\Entity\EntityInterface;
-use \Zf2ClientMoysklad\Code\Annotation;
-use Zf2SimpleAcl\Options\Exception\InvalidArgumentException;
+use Zf2ClientMoysklad\Code\Annotation;
+use Zf2ClientMoysklad\Metadata\MetadataCollection;
+use Zf2ClientMoysklad\Exception\RuntimeException;
+use Zf2ClientMoysklad\Repository\RepositoryAbstract;
 
 class EntityManager
 {
     /**
-     * @var null|UnitOfWork
+     * @var UnitOfWork
      */
     protected $unitOfWork = null;
 
-    public function __construct(UnitOfWork $unitOfWork)
+    /**
+     * @var MetadataCollection
+     */
+    protected $metadataCollection = null;
+
+    public function __construct(UnitOfWork $unitOfWork, MetadataCollection $metadataCollection)
     {
         $this->unitOfWork = $unitOfWork;
+        $this->metadataCollection = $metadataCollection;
     }
 
     /**
      * Gets the repository for a class.
      *
-     * @param string $className
-     * @return \Doctrine\Common\Persistence\ObjectRepository
+     * @param string $entityName
+     * @return RepositoryAbstract
      */
     public function getRepository($entityName)
     {
-        if (!array_key_exists($entityName, $this->classes)) {
-            throw new InvalidArgumentException('Could not find entity');
+        $classMetadata = $this->metadataCollection->getClassMetadata($entityName);
+        $repository = $classMetadata->getRepository();
+
+        if (!class_exists($repository)) {
+            throw new RuntimeException("Could not found repository class ".$repository);
         }
 
-        if (!class_exists($this->classes[$entityName]['repository'])) {
-            throw new InvalidArgumentException('Invalid repository class defined for Entity');
-        }
-
-        $className = $this->classes[$entityName]['repository'];
-        return new $className($entityName, $this->mapper, $this->filler);
+        return new $repository($entityName, $this->unitOfWork);
     }
 
     /**

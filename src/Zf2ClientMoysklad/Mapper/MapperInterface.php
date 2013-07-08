@@ -4,11 +4,9 @@ namespace Zf2ClientMoysklad\Mapper;
 interface MapperInterface {
     /**
      * @param string $collectionPath
-     * @param number $offset
-     * @param null|number $limit
      * @return mixed
      */
-    public function fetchAll($collectionPath, $offset = 0, $limit = null);
+    public function fetchAll($collectionPath);
 
     /**
      * @param string $collectionPath

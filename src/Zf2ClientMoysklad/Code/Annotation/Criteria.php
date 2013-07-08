@@ -2,12 +2,12 @@
 namespace Zf2ClientMoysklad\Code\Annotation;
 use Zend\Code\Annotation\AnnotationInterface;
 
-class Id implements AnnotationInterface
+class Criteria implements AnnotationInterface
 {
     /**
      * Initialize
      *
-     * @param  string $content
+     * @param string $content
      */
     public function initialize($content)
     {

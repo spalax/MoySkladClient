@@ -21,6 +21,7 @@ class Good implements EntityInterface
      * @var string
      *
      * @MS\Column(name="id")
+     * @MS\Criteria
      */
     protected $id = '';
 
@@ -42,8 +43,17 @@ class Good implements EntityInterface
      * @var string
      *
      * @MS\Column(name="attributes():updated")
+     * @MS\Criteria
      */
     protected $updated = '';
+
+    /**
+     * @var string
+     *
+     * @MS\Column(name="attributes():updatedBy")
+     * @MS\Criteria
+     */
+    protected $updatedBy = '';
 
     /**
      * @var string
@@ -56,6 +66,7 @@ class Good implements EntityInterface
      * @var number
      *
      * @MS\Column(name="code")
+     * @MS\Criteria
      */
     protected $code = 0;
 
@@ -70,6 +81,7 @@ class Good implements EntityInterface
      * @var string
      *
      * @MS\Column(name="company")
+     * @MS\Criteria
      */
     protected $company = '';
 
@@ -77,6 +89,7 @@ class Good implements EntityInterface
      * @var string
      *
      * @MS\Column(name="externalcode")
+     * @MS\Criteria
      */
     protected $externalCode = '';
 
@@ -84,6 +97,7 @@ class Good implements EntityInterface
      * @var string
      *
      * @MS\Column(name="description")
+     * @MS\Criteria
      */
     protected $description = '';
 
@@ -96,10 +110,24 @@ class Good implements EntityInterface
 
     /**
      * @var string
-     *
-     *
      */
     protected $article = 0;
+
+    /**
+     * @param string $updatedBy
+     */
+    public function setUpdatedBy($updatedBy)
+    {
+        $this->updatedBy = $updatedBy;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUpdatedBy()
+    {
+        return $this->updatedBy;
+    }
 
     /**
      * @param string $accountId

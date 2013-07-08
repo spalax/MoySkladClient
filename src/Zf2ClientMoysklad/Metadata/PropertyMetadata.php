@@ -30,6 +30,27 @@ class PropertyMetadata
     protected $primary = false;
 
     /**
+     * @var bool
+     */
+    protected $criteria = false;
+
+    /**
+     * @param boolean $criteria
+     */
+    public function setCriteria($criteria)
+    {
+        $this->criteria = $criteria;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getCriteria()
+    {
+        return $this->criteria;
+    }
+
+    /**
      * @param boolean $primary
      */
     public function setPrimary($primary)
@@ -72,6 +93,10 @@ class PropertyMetadata
 
         if (array_key_exists('primary', $data) && $data['primary'] === true) {
             $this->setPrimary(true);
+        }
+
+        if (array_key_exists('criteria', $data) && $data['criteria'] === true) {
+            $this->setCriteria(true);
         }
     }
 

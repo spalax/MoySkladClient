@@ -46,7 +46,8 @@ class UnitOfWork
     public function getEnityPersister($entityName)
     {
         $persister = new Persister\BasicEntityPersister($this->mapper,
-                                                        $this->metadataCollection[$entityName]);
+                                                        $this->metadataCollection
+                                                             ->getClassMetadata($entityName));
         $this->persisters[$entityName] = $persister;
         return $persister;
     }

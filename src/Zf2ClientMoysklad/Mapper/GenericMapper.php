@@ -25,16 +25,9 @@ class GenericMapper implements MapperInterface
      * @param null $limit
      * @return array
      */
-    public function fetchAll($collectionPath, $offset = 0, $limit = null)
+    public function fetchAll($collectionPath)
     {
         $uri = new Http($collectionPath);
-
-        $query = array('start'=>$offset);
-        if (!is_null($limit)) {
-            $query['limit'] = $limit;
-        }
-
-        $uri->setQuery($query);
 
         $response = $this->transport->get($uri);
         $body = $response->getBody();

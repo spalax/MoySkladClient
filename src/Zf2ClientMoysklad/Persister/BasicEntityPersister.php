@@ -40,18 +40,29 @@ class BasicEntityPersister implements PersisterInterface
     }
 
     /**
+     * Not all criterias could be added to the
+     * filtration, please consult with defined
+     * link bellow, to the understand which filtration options
+     * could be used.
+     *
      * @param array $criteria
      * @param int $offset
      * @param int $limit
      * @return string
+     * @link http://wiki.moysklad.ru/wiki/%D0%A4%D0%B8%D0%BB%D1%8C%D1%82%D1%80%D0%B0%D1%86%D0%B8%D1%8F_%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85_%D0%B2_REST-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B5
      * @throws Exception\InvalidArgumentException
      */
     protected function processCriteria(array $criteria, $offset = 0, $limit = 1000)
     {
         $suffix = array();
         foreach ($criteria as $criteriaKey => $criteriaValue) {
-            if (!preg_match('/^(?P<field>.*?)(?P<cond>[=|\>=|\<=|\>|\<])$/', $criteriaKey, $matches)) {
+            if (!preg_match('/^(?P<field>.*?)(?P<cond>(=|>=|<=|>|<))$/', $criteriaKey, $matches)) {
                 throw new InvalidArgumentException("Key of criteria must have a condition");
+            }
+
+            $property = $this->classMetadata->getProperty($matches['field']);
+            if (!$property || !$property->getCriteria()) {
+                throw new InvalidArgumentException("Criteria not found, or not supported for API");
             }
             $suffix[] = $matches['field'].$matches['cond'].$criteriaValue;
         }
@@ -63,7 +74,7 @@ class BasicEntityPersister implements PersisterInterface
         }
 
         $query['start'] = 'start='.$offset;
-        $query['limit'] = 'count='.$limit;
+        $query['count'] = 'count='.$limit;
 
         return $result.'?'.join("&", $query);
     }
@@ -106,6 +117,18 @@ class BasicEntityPersister implements PersisterInterface
      */
     public function loadAll(array $criteria, $offset = 0, $limit = 1000)
     {
-        // TODO: Implement loadAll() method.
+        $suffix = $this->processCriteria($criteria, $offset, $limit);
+        $elements = $this->mapper->fetchAll($this->classMetadata->getServiceUrl().'/'.$suffix);
+
+        $entityName = $this->classMetadata->getName();
+
+        $entities = array();
+
+        foreach ($elements as $element) {
+            $hydrator = new EntityHydrator($this->classMetadata);
+            $entities[] = $hydrator->hydrate($element, new $entityName());
+        }
+
+        return $entities;
     }
 }

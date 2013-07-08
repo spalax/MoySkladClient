@@ -109,6 +109,8 @@ class EntityCollector implements CollectorInterface
                     $propertyArr['setter'] = $this->detectPropertySetter($classScanner, $propertyScanner);
                 } else if ($annotation instanceof Annotation\Id) {
                     $propertyArr['primary'] = true;
+                } else if ($annotation instanceof Annotation\Criteria) {
+                    $propertyArr['criteria'] = true;
                 }
             }
 

@@ -3,20 +3,17 @@
 namespace Zf2ClientMoysklad\Repository;
 
 use Zf2ClientMoysklad\Entity\EntityInterface;
-use Zf2ClientMoysklad\Mapper\MapperInterface;
-use Zf2ClientMoysklad\Service\EntityFiller;
+use Zf2ClientMoysklad\UnitOfWork;
 
 abstract class RepositoryAbstract
 {
-    protected $entity = null;
-    protected $mapper = null;
-    protected $filler = null;
+    protected $entityName = null;
+    protected $unitOfWork = null;
 
-    public function __construct($entity, MapperInterface $mapper, EntityFiller $filler)
+    public function __construct($entityName, UnitOfWork $unitOfWork)
     {
-        $this->entity = $entity;
-        $this->filler = $filler;
-        $this->mapper = $mapper;
+        $this->entityName = $entityName;
+        $this->unitOfWork = $unitOfWork;
     }
 
     /**
@@ -25,30 +22,19 @@ abstract class RepositoryAbstract
      */
     public function find($id)
     {
-        return $this->entityManager->find($this->entity, $id);
+        $persister = $this->unitOfWork->getEnityPersister($this->entityName);
+        return $persister->load(array($id));
     }
 
     /**
+     * @param array $criteria
      * @param int $offset
      * @param null $limit
      * @return null
      */
-    public function findAll($offset = 0, $limit = null)
+    public function findAll(array $criteria = array(), $offset = 0, $limit = 1000)
     {
-        $elements = $this->mapper->fetchAll($this->annotations['url'].'/list', $offset, $limit);
-        if (empty($elements)) {
-            return array();
-        }
-
-        $instances = array();
-
-        foreach ($elements as $element) {
-            $instance = new $this->entity();
-            foreach($this->annotations['properties'] as $property) {
-                $instance->{$property['setter']}($property['extractor']($element));
-            }
-            $instances[] = $instance;
-        }
-        return $instances;
+        $persister = $this->unitOfWork->getEnityPersister($this->entityName);
+        return $persister->loadAll($criteria, $offset, $limit);
     }
 }

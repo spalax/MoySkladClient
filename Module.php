@@ -25,17 +25,25 @@ class Module implements AutoloaderProviderInterface, ServiceProviderInterface
                                                    $config['zf2clientmoysklad'] :
                                                    array());
                 },
-                'zf2clientmoysklad_entity_manager' => function ($sm) {
-                    $mapper = new GenericMapper($sm->get('zf2clientmoysklad_generic_transport'));
 
+                'zf2clientmoysklad_metadata_collection' => function () {
                     $directoryScanner = new DirectoryScanner(__DIR__.'/src/Zf2ClientMoysklad/Entity');
 
                     $annotationManager = new AnnotationManager();
                     $annotationManager->attach(new AnnotationParser());
 
                     $collector = new EntityCollector($annotationManager, $directoryScanner);
-                    return new EntityManager(new UnitOfWork(new MetadataCollection($collector), $mapper));
+                    return new MetadataCollection($collector);
                 },
+
+                'zf2clientmoysklad_entity_manager' => function ($sm) {
+                    $mapper = new GenericMapper($sm->get('zf2clientmoysklad_generic_transport'));
+                    $metadataCollection = $sm->get('zf2clientmoysklad_metadata_collection');
+                    return new EntityManager(new UnitOfWork($metadataCollection,
+                                                            $mapper),
+                                             $metadataCollection);
+                },
+
                 'zf2clientmoysklad_generic_transport' => function ($sm) {
                     $client = new \Zend\Http\Client();
                     $options = $sm->get('zf2clientmoysklad_module_options');
