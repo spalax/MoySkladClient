@@ -13,7 +13,12 @@ class ClassMetadata
     /**
      * @var string
      */
-    protected $serviceUrl = '';
+    protected $servicePath = '';
+
+    /**
+     * @var string
+     */
+    protected $serviceCollectionPath = '';
 
     /**
      * @var string
@@ -51,15 +56,18 @@ class ClassMetadata
         }
         $this->setName($data['name']);
 
-        if (!array_key_exists('url', $data)) {
-            throw new InvalidArgumentException('Service url must be present in data array');
+        if (!array_key_exists('path', $data)) {
+            throw new InvalidArgumentException('Service path must be present in data array');
         }
-        $this->setServiceUrl($data['url']);
+        $this->setServicePath($data['path']);
 
-        if (!array_key_exists('repository', $data)) {
-            throw new InvalidArgumentException('Repository must be present in data array');
+        if (array_key_exists('repository', $data)) {
+            $this->setRepository($data['repository']);
         }
-        $this->setRepository($data['repository']);
+
+        if (array_key_exists('collectionPath', $data)) {
+            $this->setServiceCollectionPath($data['collectionPath']);
+        }
 
         if (!array_key_exists('properties', $data) || !is_array($data['properties'])) {
             throw new InvalidArgumentException('Properties must be present in data array');
@@ -125,18 +133,34 @@ class ClassMetadata
     }
 
     /**
-     * @param string $serviceUrl
+     * @param string $serviceCollectionPath
      */
-    public function setServiceUrl($serviceUrl)
+    public function setServiceCollectionPath($serviceCollectionPath)
     {
-        $this->serviceUrl = $serviceUrl;
+        $this->serviceCollectionPath = $serviceCollectionPath;
     }
 
     /**
      * @return string
      */
-    public function getServiceUrl()
+    public function getServiceCollectionPath()
     {
-        return $this->serviceUrl;
+        return $this->serviceCollectionPath;
+    }
+
+    /**
+     * @param string $servicePath
+     */
+    public function setServicePath($servicePath)
+    {
+        $this->servicePath = $servicePath;
+    }
+
+    /**
+     * @return string
+     */
+    public function getServicePath()
+    {
+        return $this->servicePath;
     }
 }

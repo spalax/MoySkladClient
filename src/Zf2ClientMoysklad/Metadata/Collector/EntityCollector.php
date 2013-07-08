@@ -44,7 +44,8 @@ class EntityCollector implements CollectorInterface
         $result['name'] = $classScanner->getName();
         foreach ($classScanner->getAnnotations($this->annotationManager) as $annotation) {
             if ($annotation instanceof Annotation\Service) {
-                $result['url'] = $annotation->getPath();
+                $result['path'] = $annotation->getPath();
+                $result['collectionPath'] = $annotation->getCollectionPath();
             } else if ($annotation instanceof Annotation\Entity) {
                 $result['repository'] = $annotation->getRepository();
             }

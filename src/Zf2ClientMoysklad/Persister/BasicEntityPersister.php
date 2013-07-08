@@ -48,7 +48,7 @@ class BasicEntityPersister implements PersisterInterface
      * @param array $criteria
      * @param int $offset
      * @param int $limit
-     * @return string
+     * @return Http
      * @link http://wiki.moysklad.ru/wiki/%D0%A4%D0%B8%D0%BB%D1%8C%D1%82%D1%80%D0%B0%D1%86%D0%B8%D1%8F_%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85_%D0%B2_REST-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B5
      * @throws Exception\InvalidArgumentException
      */
@@ -68,15 +68,17 @@ class BasicEntityPersister implements PersisterInterface
         }
 
         $query = array();
-        $result = 'list';
         if (count($suffix)) {
-            $query[] = 'filter='.urlencode(join(';',$suffix));
+            $query['filter'] = urlencode(join(';',$suffix));
         }
 
-        $query['start'] = 'start='.$offset;
-        $query['count'] = 'count='.$limit;
+        $query['start'] = $offset;
+        $query['count'] = $limit;
 
-        return $result.'?'.join("&", $query);
+        $uri = new Http($this->classMetadata->getServiceCollectionPath());
+        $uri->setQuery($query);
+
+        return $uri;
     }
 
     /**
@@ -87,18 +89,19 @@ class BasicEntityPersister implements PersisterInterface
      */
     public function load(array $criteria, $offset = 0, $limit = 1000)
     {
+        $httpUri = null;
         if (count($criteria) == 1) {
             list($key, $value) = each($criteria);
             if (is_numeric($key)) {
-                $suffix = $value;
+                $httpUri = new Http($this->classMetadata->getServicePath().'/'.$value);
             } else {
-                $suffix = $this->processCriteria($criteria, $offset, $limit);
+                $httpUri = $this->processCriteria($criteria, $offset, $limit);
             }
         } else {
-            $suffix = $this->processCriteria($criteria, $offset, $limit);
+            $httpUri = $this->processCriteria($criteria, $offset, $limit);
         }
 
-        $element = $this->mapper->fetchOne($this->classMetadata->getServiceUrl().'/'.$suffix);
+        $element = $this->mapper->fetchOne($httpUri->toString());
 
         if (is_null($element)) {
             return null;
@@ -117,8 +120,8 @@ class BasicEntityPersister implements PersisterInterface
      */
     public function loadAll(array $criteria, $offset = 0, $limit = 1000)
     {
-        $suffix = $this->processCriteria($criteria, $offset, $limit);
-        $elements = $this->mapper->fetchAll($this->classMetadata->getServiceUrl().'/'.$suffix);
+        $httpUri = $this->processCriteria($criteria, $offset, $limit);
+        $elements = $this->mapper->fetchAll($httpUri->toString());
 
         $entityName = $this->classMetadata->getName();
 
