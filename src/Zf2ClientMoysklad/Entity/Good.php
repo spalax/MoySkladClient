@@ -96,6 +96,14 @@ class Good implements EntityInterface
     /**
      * @var string
      *
+     * @MS\Column(name="attributes():productCode")
+     * @MS\Criteria
+     */
+    protected $productCode = '';
+
+    /**
+     * @var string
+     *
      * @MS\Column(name="description")
      * @MS\Criteria
      */
@@ -112,6 +120,22 @@ class Good implements EntityInterface
      * @var string
      */
     protected $article = 0;
+
+    /**
+     * @param string $productCode
+     */
+    public function setProductCode($productCode)
+    {
+        $this->productCode = $productCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProductCode()
+    {
+        return $this->productCode;
+    }
 
     /**
      * @param string $updatedBy

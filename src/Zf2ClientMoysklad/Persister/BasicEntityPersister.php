@@ -46,13 +46,11 @@ class BasicEntityPersister implements PersisterInterface
      * could be used.
      *
      * @param array $criteria
-     * @param int $offset
-     * @param int $limit
      * @return Http
      * @link http://wiki.moysklad.ru/wiki/%D0%A4%D0%B8%D0%BB%D1%8C%D1%82%D1%80%D0%B0%D1%86%D0%B8%D1%8F_%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85_%D0%B2_REST-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B5
      * @throws Exception\InvalidArgumentException
      */
-    protected function processCriteria(array $criteria, $offset = 0, $limit = 1000)
+    protected function processCriteria(array $criteria)
     {
         $suffix = array();
         foreach ($criteria as $criteriaKey => $criteriaValue) {
@@ -72,9 +70,6 @@ class BasicEntityPersister implements PersisterInterface
             $query['filter'] = urlencode(join(';',$suffix));
         }
 
-        $query['start'] = $offset;
-        $query['count'] = $limit;
-
         $uri = new Http($this->classMetadata->getServiceCollectionPath());
         $uri->setQuery($query);
 
@@ -83,11 +78,9 @@ class BasicEntityPersister implements PersisterInterface
 
     /**
      * @param array $criteria
-     * @param number $offset [OPTIONAL]
-     * @param number $limit [OPTIONAL]
      * @return EntityInterface | null
      */
-    public function load(array $criteria, $offset = 0, $limit = 1000)
+    public function load(array $criteria)
     {
         $httpUri = null;
         if (count($criteria) == 1) {
@@ -95,10 +88,10 @@ class BasicEntityPersister implements PersisterInterface
             if (is_numeric($key)) {
                 $httpUri = new Http($this->classMetadata->getServicePath().'/'.$value);
             } else {
-                $httpUri = $this->processCriteria($criteria, $offset, $limit);
+                $httpUri = $this->processCriteria($criteria);
             }
         } else {
-            $httpUri = $this->processCriteria($criteria, $offset, $limit);
+            $httpUri = $this->processCriteria($criteria);
         }
 
         $element = $this->mapper->fetchOne($httpUri->toString());
@@ -112,17 +105,13 @@ class BasicEntityPersister implements PersisterInterface
         return $hydrator->hydrate($element, new $entityName());
     }
 
-    /**
-     * @param array $criteria
-     * @param int $offset [OPTIONAL]
-     * @param int $limit [OPTIONAL]
-     * @return EntityInterface[]
-     */
-    public function loadAll(array $criteria, $offset = 0, $limit = 1000)
+    protected function partiallyRequest(Http $httpUri, $offset, $limit)
     {
-        $httpUri = $this->processCriteria($criteria, $offset, $limit);
+        $query = $httpUri->getQueryAsArray();
+        $query['start'] = $offset;
+        $query['count'] = $limit;
+        $httpUri->setQuery($query);
         $elements = $this->mapper->fetchAll($httpUri->toString());
-
         $entityName = $this->classMetadata->getName();
 
         $entities = array();
@@ -130,6 +119,43 @@ class BasicEntityPersister implements PersisterInterface
         foreach ($elements as $element) {
             $hydrator = new EntityHydrator($this->classMetadata);
             $entities[] = $hydrator->hydrate($element, new $entityName());
+        }
+
+        return $entities;
+    }
+
+    /**
+     * @param array $criteria
+     * @param int $offset [OPTIONAL]
+     * @param int $limit [OPTIONAL]
+     * @return EntityInterface[]
+     */
+    public function loadAll(array $criteria, $offset = 0, $limit = null)
+    {
+        $httpUri = $this->processCriteria($criteria, $offset);
+        $entities = array();
+
+        $query['start'] = $offset;
+        $query['count'] = $limit = is_null($limit) ? 1000 : $limit;
+
+        if ($limit > 0) {
+            $delta = intval($limit / 1000);
+            $lastLimit = $limit % 1000;
+
+            for ($i = 1;$i <= $delta; $i++) {
+                $result = $this->partiallyRequest($httpUri, $offset, 1000);
+
+                if (!count($result)) {
+                    return $entities;
+                }
+
+                $entities = array_merge($entities, $result);
+                $offset+= 1000;
+            }
+
+            if ($lastLimit) {
+               $entities = array_merge($entities, $this->partiallyRequest($httpUri, $offset, $lastLimit));
+            }
         }
 
         return $entities;

@@ -7,11 +7,9 @@ interface PersisterInterface
 {
     /**
      * @param array $criteria
-     * @param int $offset
-     * @param int $limit
      * @return null | EntityInterface
      */
-    public function load(array $criteria, $offset = 0, $limit = 1000);
+    public function load(array $criteria);
 
     /**
      * @param array $criteria

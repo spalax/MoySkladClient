@@ -21,6 +21,28 @@ class ModuleOptions extends AbstractOptions
      */
     protected $password = '';
 
+    /**
+     * @var string
+     */
+    protected $defaultEntityNamespace = 'Zf2ClientMoysklad';
+
+
+    /**
+     * @param string $defaultEntityNamespace
+     */
+    public function setDefaultEntityNamespace($defaultEntityNamespace)
+    {
+        $this->defaultEntityNamespace = $defaultEntityNamespace;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultEntityNamespace()
+    {
+        return $this->defaultEntityNamespace;
+    }
+
     public function getApiUrl()
     {
         return $this->apiUrl;

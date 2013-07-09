@@ -29,10 +29,10 @@ abstract class RepositoryAbstract
     /**
      * @param array $criteria
      * @param int $offset
-     * @param null $limit
-     * @return null
+     * @param null | int $limit
+     * @return EntityInterface[]
      */
-    public function findAll(array $criteria = array(), $offset = 0, $limit = 1000)
+    public function findAll(array $criteria = array(), $offset = 0, $limit = null)
     {
         $persister = $this->unitOfWork->getEnityPersister($this->entityName);
         return $persister->loadAll($criteria, $offset, $limit);
