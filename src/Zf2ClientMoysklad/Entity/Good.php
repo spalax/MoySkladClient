@@ -4,8 +4,10 @@ namespace Zf2ClientMoysklad\Entity;
 /**
  * Good entity
  *
- * @MS\Service(path="/exchange/rest/ms/xml/Good", collection="/exchange/rest/ms/xml/Good/list")
+ * @MS\Service(path="/exchange/rest/ms/xml/Good",
+ *             collection="/exchange/rest/ms/xml/Good/list")
  * @MS\Entity(repositoryClass="Zf2ClientMoysklad\Repository\GoodsRepository")
+ * @MS\XML(rootElement="good")
  */
 class Good implements EntityInterface
 {

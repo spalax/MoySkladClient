@@ -1,11 +1,9 @@
 <?php
 namespace Zf2ClientMoysklad\Transport;
 
-use Zend\Http\Header\AcceptEncoding;
 use Zend\Http\Request;
 use Zend\Http\Response;
 use Zend\Stdlib\DispatchableInterface;
-use Zend\Stdlib\ResponseInterface;
 use Zend\Uri\Http;
 use Zend\Http\Client;
 use Zf2ClientMoysklad\Options\ModuleOptionsInterface;
@@ -33,16 +31,12 @@ class GenericTransport implements TransportInterface
     }
 
     /**
-     * @param Http $httpUri
+     * @param Request $request
      * @return Response
      */
-    public function get(Http $httpUri)
+    protected function proceed(Http $httpUri, Request $request)
     {
-
         $httpUri = $httpUri->parse($this->moduleOptions->getApiUrl().$httpUri->toString());
-
-        $request = new Request();
-
         $request->setUri($httpUri);
 
         $this->httpClient->setAuth($this->moduleOptions->getUserName(),
@@ -52,9 +46,24 @@ class GenericTransport implements TransportInterface
         return $this->httpClient->send($request);
     }
 
-    public function post(Http $uri)
+    /**
+     * @param Http $httpUri
+     * @return Response
+     */
+    public function get(Http $uri)
     {
-        // TODO: Implement post() method.
+        $request = new Request();
+        return $this->proceed($uri, $request);
+    }
+
+    /**
+     * @param Http $uri
+     * @param Request $request
+     * @return Response
+     */
+    public function post(Http $uri, Request $request)
+    {
+        return $this->proceed($uri, $request);
     }
 
     public function delete(Http $uri)
@@ -62,8 +71,13 @@ class GenericTransport implements TransportInterface
         // TODO: Implement delete() method.
     }
 
-    public function put(Http $uri)
+    /**
+     * @param Http $uri
+     * @param Request $request
+     * @return Response
+     */
+    public function put(Http $uri, Request $request)
     {
-        // TODO: Implement put() method.
+        return $this->proceed($uri, $request);
     }
 }

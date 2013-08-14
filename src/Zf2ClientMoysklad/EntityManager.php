@@ -55,4 +55,20 @@ class EntityManager
         $persister = $this->unitOfWork->getEnityPersister($entityName);
         return $persister->load(array($id));
     }
+
+    /**
+     * @param EntityInterface $entity
+     */
+    public function persist(EntityInterface $entity)
+    {
+        $this->unitOfWork->persist($entity);
+    }
+
+    /**
+     * @return void
+     */
+    public function flush()
+    {
+        $this->unitOfWork->commit();
+    }
 }

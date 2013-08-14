@@ -18,4 +18,10 @@ interface PersisterInterface
      * @return EntityInterface[]
      */
     public function loadAll(array $criteria, $offset = 0, $limit = 1000);
+
+    /**
+     * @param EntityInterface $entity
+     * @return mixed
+     */
+    public function save(EntityInterface $entity);
 }

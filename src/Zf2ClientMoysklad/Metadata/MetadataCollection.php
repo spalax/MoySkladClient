@@ -1,6 +1,7 @@
 <?php
 namespace Zf2ClientMoysklad\Metadata;
 
+use Zf2ClientMoysklad\Entity\EntityInterface;
 use Zf2ClientMoysklad\Metadata\Collector\CollectorInterface;
 
 class MetadataCollection
@@ -41,7 +42,7 @@ class MetadataCollection
     {
         is_null($this->metadata) && $this->init();
         if (!array_key_exists($className, $this->metadata)) {
-            throw new \InvalidArgumentException("Could not found requiested class name ".$className);
+            throw new \InvalidArgumentException("Could not found requested class name ".$className);
         }
         return $this->metadata[$className];
     }

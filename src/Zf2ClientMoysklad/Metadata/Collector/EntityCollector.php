@@ -6,6 +6,7 @@ use Zend\Code\Scanner\ClassScanner;
 use Zend\Code\Scanner\PropertyScanner;
 use Zf2ClientMoysklad\Code\Annotation;
 use Zend\Code\Scanner\DirectoryScanner;
+use Zf2ClientMoysklad\Metadata\ClassMetadata;
 use Zf2ClientMoysklad\Metadata\Collector\Exception\RuntimeException;
 
 class EntityCollector implements CollectorInterface
@@ -48,6 +49,8 @@ class EntityCollector implements CollectorInterface
                 $result['collectionPath'] = $annotation->getCollectionPath();
             } else if ($annotation instanceof Annotation\Entity) {
                 $result['repository'] = $annotation->getRepository();
+            } else if ($annotation instanceof Annotation\XML) {
+                $result['rootElement'] = $annotation->getRootElement();
             }
         }
         return $result;
@@ -72,7 +75,38 @@ class EntityCollector implements CollectorInterface
                     $el = $el->{$token};
                 }
             }
-            return (string)$el;
+            return $el;
+        };
+    }
+
+    /**
+     * @param string $fieldName
+     * @param boolean $isRequired
+     * @return callable
+     */
+    protected function buildFieldSerializer($fieldName, $isRequired)
+    {
+        return function ($value, \SimpleXMLElement $element) use ($fieldName, $isRequired) {
+            if (is_null($value)){
+              if (!$isRequired) {
+                  return $element;
+              } else {
+                  throw new Exception\RuntimeException($fieldName.' required to fill it on. It is must not be null.');
+              }
+            }
+
+            $tokens = explode(':', $fieldName);
+            $el = $element;
+
+            foreach ($tokens as $i=>$token) {
+                if ($token == 'attributes()') {
+                    $el->addAttribute($tokens[count($tokens)-1], $value);
+                    break;
+                } else {
+                    $el = $el->addChild($token, ((count($tokens)-1) == $i ? $value : null));
+                }
+            }
+            return $element;
         };
     }
 
@@ -81,7 +115,23 @@ class EntityCollector implements CollectorInterface
      * @param PropertyScanner $propertyScanner
      * @return string
      */
-    protected function detectPropertySetter(ClassScanner $classScanner, PropertyScanner $propertyScanner)
+    protected function detectPropertyGet(ClassScanner $classScanner, PropertyScanner $propertyScanner)
+    {
+        foreach($classScanner->getMethodNames() as $methodName) {
+            if (strtolower($methodName) == strtolower('get'.$propertyScanner->getName())) {
+                return $methodName;
+            }
+        }
+
+        throw new RuntimeException("Could not found get for property ".$propertyScanner->getName());
+    }
+
+    /**
+     * @param ClassScanner $classScanner
+     * @param PropertyScanner $propertyScanner
+     * @return string
+     */
+    protected function detectPropertySet(ClassScanner $classScanner, PropertyScanner $propertyScanner)
     {
         foreach($classScanner->getMethodNames() as $methodName) {
             if (strtolower($methodName) == strtolower('set'.$propertyScanner->getName())) {
@@ -89,14 +139,31 @@ class EntityCollector implements CollectorInterface
             }
         }
 
-        throw new RuntimeException("Could not found setter for property ".$propertyScanner->getName());
+        throw new RuntimeException("Could not found set for property ".$propertyScanner->getName());
     }
 
     /**
      * @param ClassScanner $classScanner
+     * @param PropertyScanner $propertyScanner
+     * @return string
+     */
+    protected function detectPropertyAdd(ClassScanner $classScanner, PropertyScanner $propertyScanner)
+    {
+        foreach($classScanner->getMethodNames() as $methodName) {
+            if (strtolower($methodName) == strtolower('add'.$propertyScanner->getName())) {
+                return $methodName;
+            }
+        }
+
+        throw new RuntimeException("Could not found add handler for property ".$propertyScanner->getName());
+    }
+
+    /**
+     * @param ClassScanner $classScanner
+     * @param ClassScanner[] $allClassScanners
      * @return array
      */
-    protected function processPropertiesAnnotations(ClassScanner $classScanner)
+    protected function processPropertiesAnnotations(ClassScanner $classScanner, array $allClassScanners)
     {
         $result = array();
         /* @var $propertyScanner \Zend\Code\Scanner\PropertyScanner */
@@ -104,14 +171,19 @@ class EntityCollector implements CollectorInterface
             $propertyArr = array();
             foreach($propertyScanner->getAnnotations($this->annotationManager) as $annotation) {
                 if ($annotation instanceof Annotation\Column) {
-                    $propertyArr['name'] = $propertyScanner->getName();
-                    $propertyArr['field'] = $annotation->getName();
-                    $propertyArr['extractor'] = $this->buildFieldExtractor($annotation->getName());
-                    $propertyArr['setter'] = $this->detectPropertySetter($classScanner, $propertyScanner);
+                    $propertyArr = array_merge($propertyArr, $this->handleColumn($annotation,
+                                                                                 $propertyScanner,
+                                                                                 $classScanner));
                 } else if ($annotation instanceof Annotation\Id) {
                     $propertyArr['primary'] = true;
                 } else if ($annotation instanceof Annotation\Criteria) {
                     $propertyArr['criteria'] = true;
+                } else if ($annotation instanceof Annotation\OneToMany) {
+                    $propertyArr = array_merge($propertyArr,
+                                               $this->handleOneToManyAnnotation($annotation,
+                                                                                $propertyScanner,
+                                                                                $classScanner,
+                                                                                $allClassScanners));
                 }
             }
 
@@ -124,20 +196,100 @@ class EntityCollector implements CollectorInterface
     }
 
     /**
+     * @param Annotation\Column $annotation
+     * @param PropertyScanner $propertyScanner
+     * @param ClassScanner $classScanner
+     * @return array
+     */
+    protected function handleColumn(Annotation\Column $annotation,
+                                    PropertyScanner $propertyScanner,
+                                    ClassScanner $classScanner)
+    {
+        $propertyArr = array();
+
+        $propertyArr['name'] = $propertyScanner->getName();
+        $propertyArr['field'] = $annotation->getName();
+        $propertyArr['extractor'] = $this->buildFieldExtractor($annotation->getName());
+        $propertyArr['serializer'] = $this->buildFieldSerializer($annotation->getName(), $annotation->isRequired());
+        $propertyArr['handler'] = $this->detectPropertySet($classScanner, $propertyScanner);
+        $propertyArr['getter'] = $this->detectPropertyGet($classScanner, $propertyScanner);
+
+        return $propertyArr;
+    }
+
+    /**
+     * @param Annotation\OneToMany $annotation
+     * @param PropertyScanner $propertyScanner
+     * @param ClassScanner $classScanner
+     * @param ClassScanner[] $allClassScanners
+     * @return array
+     * @throws Exception\RuntimeException
+     */
+    protected function handleOneToManyAnnotation(Annotation\OneToMany $annotation,
+                                                 PropertyScanner $propertyScanner,
+                                                 ClassScanner $classScanner,
+                                                 array $allClassScanners)
+    {
+        $targetEntity = $annotation->getTargetEntity();
+        $propertyArr = array();
+
+        $propertyArr['name'] = $propertyScanner->getName();
+        $propertyArr['field'] = $annotation->getName();
+        $propertyArr['extractor'] = $this->buildFieldExtractor($annotation->getName());
+        $propertyArr['serializer'] = $this->buildFieldSerializer($annotation->getName(), false);
+        $propertyArr['handler'] = $this->detectPropertyAdd($classScanner, $propertyScanner);
+        $propertyArr['getter'] = $this->detectPropertyGet($classScanner, $propertyScanner);
+
+        $ref = new \ReflectionClass($classScanner->getName());
+        if (!$ref->newInstance()->{$propertyArr['getter']}() instanceof \SplObjectStorage) {
+            throw new RuntimeException("Invalid data type returned from getter in OneToMany relationship,
+                                        must return SplObjectStorage");
+        }
+
+        /* @var $scanner ClassScanner  */
+        foreach ($allClassScanners as $scanner) {
+            if ($scanner->getName() == $targetEntity) {
+                if (!($params = $this->collectDataForClass($scanner, $allClassScanners))) {
+                    throw new RuntimeException("Invalid data type for collectDataForClass");
+                }
+                $propertyArr['targetEntity'] = new ClassMetadata($params);
+                return $propertyArr;
+            }
+        }
+        
+        throw new RuntimeException("Invalid targetEntity this Entity could not be found by entity scanner");
+    }
+
+    /**
+     * @param ClassScanner $classScanner
+     * @param ClassScanner[] $allClasses
+     * @return array | false
+     */
+    protected function collectDataForClass(ClassScanner $classScanner, array $allClasses)
+    {
+        if ($classScanner->isInterface()) return false;
+
+        $classArr = array('properties'=>array());
+
+        $classArr = array_merge($classArr, $this->processClassAnnotations($classScanner));
+        return array_merge($classArr, $this->processPropertiesAnnotations($classScanner, $allClasses));
+    }
+
+    /**
      * @return array
      */
     public function collect()
     {
         $classes = array();
 
+        /* @var $classesToScan ClassScanner[] */
+        $classesToScan = $this->directoryScanner->getClasses();
+
         /* @var $classScanner \Zend\Code\Scanner\ClassScanner */
-        foreach ($this->directoryScanner->getClasses() as $classScanner) {
-            if ($classScanner->isInterface()) continue;
-
-            $classArr = array('properties'=>array());
-
-            $classArr = array_merge($classArr, $this->processClassAnnotations($classScanner));
-            $classArr = array_merge($classArr, $this->processPropertiesAnnotations($classScanner));
+        foreach ($classesToScan as $classScanner) {
+            if (!($classArr = $this->collectDataForClass($classScanner, $classesToScan))) {
+                continue;
+            }
 
             $classes[$classScanner->getName()] = $classArr;
         }

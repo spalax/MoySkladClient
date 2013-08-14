@@ -24,6 +24,16 @@ class ModuleOptions extends AbstractOptions
     /**
      * @var string
      */
+    protected $sourceStoreId = '';
+
+    /**
+     * @var string
+     */
+    protected $sourceAgentId = '';
+
+    /**
+     * @var string
+     */
     protected $defaultEntityNamespace = 'Zf2ClientMoysklad';
 
 
@@ -43,6 +53,9 @@ class ModuleOptions extends AbstractOptions
         return $this->defaultEntityNamespace;
     }
 
+    /**
+     * @return string
+     */
     public function getApiUrl()
     {
         return $this->apiUrl;
@@ -56,6 +69,9 @@ class ModuleOptions extends AbstractOptions
         $this->apiUrl = $apiUrl;
     }
 
+    /**
+     * @return string
+     */
     public function getPassword()
     {
         return $this->password;
@@ -69,6 +85,9 @@ class ModuleOptions extends AbstractOptions
         $this->password = $password;
     }
 
+    /**
+     * @return string
+     */
     public function getUserName()
     {
         return $this->userName;
@@ -82,4 +101,35 @@ class ModuleOptions extends AbstractOptions
         $this->userName = $userName;
     }
 
+    /**
+     * @param string $sourceAgentId
+     */
+    public function setSourceAgentId($sourceAgentId)
+    {
+        $this->sourceAgentId = $sourceAgentId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSourceAgentId()
+    {
+        return $this->sourceAgentId;
+    }
+
+    /**
+     * @param string $sourceStoreId
+     */
+    public function setSourceStoreId($sourceStoreId)
+    {
+        $this->sourceStoreId = $sourceStoreId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSourceStoreId()
+    {
+        return $this->sourceStoreId;
+    }
 }

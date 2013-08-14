@@ -1,7 +1,8 @@
 <?php
 namespace Zf2ClientMoysklad\Mapper;
 
-interface MapperInterface {
+interface MapperInterface
+{
     /**
      * @param string $collectionPath
      * @return mixed
@@ -10,7 +11,15 @@ interface MapperInterface {
 
     /**
      * @param string $collectionPath
-     * @return mixed
+     * @return \SimpleXMLElement | null
      */
     public function fetchOne($collectionPath);
+
+    /**
+     * @param $collectionPath
+     * @param \SimpleXMLElement $element
+     * @return \SimpleXMLElement | null
+     */
+    public function save($collectionPath,
+                         \SimpleXMLElement $element);
 }

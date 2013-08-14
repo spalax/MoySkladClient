@@ -2,6 +2,7 @@
 namespace Zf2ClientMoysklad\Metadata;
 
 use Zf2ClientMoysklad\Metadata\Exception\InvalidArgumentException;
+
 class PropertyMetadata
 {
     /**
@@ -20,9 +21,24 @@ class PropertyMetadata
     protected $extractor = null;
 
     /**
+     * @var \Closure
+     */
+    protected $serializer = null;
+
+    /**
+     * @var ClassMetadata
+     */
+    protected $targetEntity = null;
+
+    /**
      * @var string
      */
-    protected $setter = '';
+    protected $handler = '';
+
+    /**
+     * @var string
+     */
+    protected $getter = '';
 
     /**
      * @var bool
@@ -33,6 +49,22 @@ class PropertyMetadata
      * @var bool
      */
     protected $criteria = false;
+
+    /**
+     * @param string $getter
+     */
+    public function setGetter($getter)
+    {
+        $this->getter = $getter;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGetter()
+    {
+        return $this->getter;
+    }
 
     /**
      * @param boolean $criteria
@@ -81,15 +113,25 @@ class PropertyMetadata
         }
         $this->setField($data['field']);
 
-        if (!array_key_exists('setter', $data)) {
-            throw new InvalidArgumentException("Setter must present in property data");
+        if (!array_key_exists('handler', $data)) {
+            throw new InvalidArgumentException("Handler must present in property data");
         }
-        $this->setSetter($data['setter']);
+        $this->setHandler($data['handler']);
+
+        if (!array_key_exists('getter', $data)) {
+            throw new InvalidArgumentException("Getter must present in property data");
+        }
+        $this->setGetter($data['getter']);
 
         if (!array_key_exists('extractor', $data) || !($data['extractor'] instanceof \Closure)) {
             throw new InvalidArgumentException("Extractor must present and callable in property data");
         }
         $this->setExtractor($data['extractor']);
+
+        if (!array_key_exists('serializer', $data) || !($data['serializer'] instanceof \Closure)) {
+            throw new InvalidArgumentException("Serializer must present and callable in property data");
+        }
+        $this->setSerializer($data['serializer']);
 
         if (array_key_exists('primary', $data) && $data['primary'] === true) {
             $this->setPrimary(true);
@@ -97,6 +139,10 @@ class PropertyMetadata
 
         if (array_key_exists('criteria', $data) && $data['criteria'] === true) {
             $this->setCriteria(true);
+        }
+
+        if (array_key_exists('targetEntity', $data) && $data['targetEntity'] instanceof ClassMetadata) {
+            $this->setTargetEntity($data['targetEntity']);
         }
     }
 
@@ -133,6 +179,22 @@ class PropertyMetadata
     }
 
     /**
+     * @param \Closure $serializer
+     */
+    public function setSerializer(\Closure $serializer)
+    {
+        $this->serializer = $serializer;
+    }
+
+    /**
+     * @return \Closure
+     */
+    public function getSerializer()
+    {
+        return $this->serializer;
+    }
+
+    /**
      * @param string $field
      */
     public function setField($field)
@@ -149,18 +211,42 @@ class PropertyMetadata
     }
 
     /**
-     * @param string $setter
+     * @param string $handler
      */
-    public function setSetter($setter)
+    public function setHandler($handler)
     {
-        $this->setter = $setter;
+        $this->handler = $handler;
     }
 
     /**
      * @return string
      */
-    public function getSetter()
+    public function getHandler()
     {
-        return $this->setter;
+        return $this->handler;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOneToMany()
+    {
+        return $this->targetEntity == null ? false : true ;
+    }
+
+    /**
+     * @param ClassMetadata $targetEntity
+     */
+    public function setTargetEntity(ClassMetadata $targetEntity)
+    {
+        $this->targetEntity = $targetEntity;
+    }
+
+    /**
+     * @return ClassMetadata
+     */
+    public function getTargetEntity()
+    {
+        return $this->targetEntity;
     }
 }

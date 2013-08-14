@@ -2,6 +2,7 @@
 namespace Zf2ClientMoysklad\Transport;
 
 use Zend\Http\Response;
+use Zend\Http\Request;
 use Zend\Uri\Http;
 
 interface TransportInterface
@@ -15,7 +16,7 @@ interface TransportInterface
      * @param Http $uri
      * @return Response
      */
-    public function post(Http $uri);
+    public function post(Http $uri, Request $request);
     /**
      * @param Http $uri
      * @return Response
@@ -25,5 +26,5 @@ interface TransportInterface
      * @param Http $uri
      * @return Response
      */
-    public function put(Http $uri);
+    public function put(Http $uri, Request $request);
 }

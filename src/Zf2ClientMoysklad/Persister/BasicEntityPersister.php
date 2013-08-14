@@ -105,6 +105,12 @@ class BasicEntityPersister implements PersisterInterface
         return $hydrator->hydrate($element, new $entityName());
     }
 
+    /**
+     * @param Http $httpUri
+     * @param int $offset
+     * @param int $limit
+     * @return array
+     */
     protected function partiallyRequest(Http $httpUri, $offset, $limit)
     {
         $query = $httpUri->getQueryAsArray();
@@ -122,6 +128,20 @@ class BasicEntityPersister implements PersisterInterface
         }
 
         return $entities;
+    }
+
+    /**
+     * @param EntityInterface $entity
+     * @return mixed | object
+     */
+    public function save(EntityInterface $entity)
+    {
+        $httpUri = new Http($this->classMetadata->getServicePath());
+
+        $hydrator = new EntityHydrator($this->classMetadata);
+        $element = $this->mapper->save($httpUri, $hydrator->extract($entity));
+
+        return $hydrator->hydrate($element, $entity);
     }
 
     /**

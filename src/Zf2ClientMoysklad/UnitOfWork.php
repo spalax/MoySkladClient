@@ -9,6 +9,8 @@
 
 namespace Zf2ClientMoysklad;
 
+use Zend\Stdlib\Hydrator\Reflection;
+use Zf2ClientMoysklad\Entity\EntityInterface;
 use Zf2ClientMoysklad\Exception\RuntimeException;
 use Zf2ClientMoysklad\Mapper\MapperInterface;
 use Zf2ClientMoysklad\Metadata\ClassMetadata;
@@ -17,6 +19,9 @@ use Zf2ClientMoysklad\Persister;
 
 class UnitOfWork
 {
+    const PERSISTED_NEW = 'new';
+    const PERSISTED_OLD = 'old';
+
     /**
      * @var array
      */
@@ -28,6 +33,11 @@ class UnitOfWork
     protected $metadataCollection = null;
 
     /**
+     * @var array
+     */
+    protected $persisted = array();
+
+    /**
      * @var MapperInterface
      */
     protected $mapper = null;
@@ -36,6 +46,7 @@ class UnitOfWork
     {
         $this->metadataCollection = $metadataCollection;
         $this->mapper = $mapper;
+        $this->persisted = array();
     }
 
     /**
@@ -45,10 +56,34 @@ class UnitOfWork
      */
     public function getEnityPersister($entityName)
     {
-        $persister = new Persister\BasicEntityPersister($this->mapper,
-                                                        $this->metadataCollection
-                                                             ->getClassMetadata($entityName));
-        $this->persisters[$entityName] = $persister;
-        return $persister;
+        if (!array_key_exists($entityName, $this->persisters)) {
+            $persister = new Persister\BasicEntityPersister($this->mapper,
+                                                            $this->metadataCollection
+                                                                 ->getClassMetadata($entityName));
+
+            $this->persisters[$entityName] = $persister;
+        }
+
+        return $this->persisters[$entityName];
+    }
+
+    /**
+     * @param EntityInterface $entity
+     */
+    public function persist(EntityInterface $entity)
+    {
+        $key = spl_object_hash($entity);
+        $this->persisted[$key] = $entity;
+    }
+
+    public function commit()
+    {
+        foreach ($this->persisted as $k=>$entity) {
+            $reflection = new \ReflectionObject($entity);
+            $persister = $this->getEnityPersister($reflection->getName());
+            $persister->save($entity);
+
+            unset($this->persisted[$k]);
+        }
     }
 }

@@ -23,7 +23,17 @@ class ClassMetadata
     /**
      * @var string
      */
+    protected $rootElement = '';
+
+    /**
+     * @var string
+     */
     protected $repository = '';
+
+    /**
+     * @var null
+     */
+    protected $primaryProperty = null;
 
     /**
      * @var PropertyMetadata[]
@@ -56,10 +66,9 @@ class ClassMetadata
         }
         $this->setName($data['name']);
 
-        if (!array_key_exists('path', $data)) {
-            throw new InvalidArgumentException('Service path must be present in data array');
+        if (array_key_exists('path', $data)) {
+            $this->setServicePath($data['path']);
         }
-        $this->setServicePath($data['path']);
 
         if (array_key_exists('repository', $data)) {
             $this->setRepository($data['repository']);
@@ -69,13 +78,29 @@ class ClassMetadata
             $this->setServiceCollectionPath($data['collectionPath']);
         }
 
+        if (array_key_exists('rootElement', $data)) {
+            $this->setRootElement($data['rootElement']);
+        }
+
         if (!array_key_exists('properties', $data) || !is_array($data['properties'])) {
             throw new InvalidArgumentException('Properties must be present in data array');
         }
 
         foreach ($data['properties'] as $property) {
-            $this->addProperty(new PropertyMetadata($property));
+            $prop = new PropertyMetadata($property);
+            if ($prop->getPrimary()) {
+                $this->primaryProperty = $prop;
+            }
+            $this->addProperty($prop);
         }
+    }
+
+    /**
+     * @return PropertyMetadata | null
+     */
+    public function getPrimary()
+    {
+        return $this->primaryProperty;
     }
 
     /**
@@ -162,5 +187,21 @@ class ClassMetadata
     public function getServicePath()
     {
         return $this->servicePath;
+    }
+
+    /**
+     * @param string $rootElement
+     */
+    public function setRootElement($rootElement)
+    {
+        $this->rootElement = $rootElement;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRootElement()
+    {
+        return $this->rootElement;
     }
 }

@@ -7,6 +7,7 @@ namespace Zf2ClientMoysklad\Entity;
  * @MS\Service(path="/exchange/rest/ms/xml/GoodFolder",
  *             collection="/exchange/rest/ms/xml/GoodFolder/list")
  * @MS\Entity(repositoryClass="Zf2ClientMoysklad\Repository\GoodFoldersRepository")
+ * @MS\XML(rootElement="goodFolder")
  */
 class GoodFolder implements EntityInterface
 {

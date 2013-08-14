@@ -1,4 +1,8 @@
 <?php
 return array(
-    'zf2clientmoysklad' => array()
+    'zf2clientmoysklad' => array(
+            'api_url' => 'https://online.moysklad.ru',
+            'user_name' => '',
+            'password' => ''
+        )
 );
