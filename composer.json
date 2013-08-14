@@ -17,7 +17,8 @@
     "license": "MIT",
     "require": {
         "php": ">=5.3",
-        "zendframework/zendframework": ">=2.0.0"
+        "zendframework/zendframework": ">=2.0.0",
+        "milcrew/zf2-libs": "dev-master"
     },
     "autoload": {
         "psr-0": {
