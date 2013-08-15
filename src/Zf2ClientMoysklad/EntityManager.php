@@ -6,6 +6,7 @@ use Zf2ClientMoysklad\Entity\EntityInterface;
 use Zf2ClientMoysklad\Code\Annotation;
 use Zf2ClientMoysklad\Metadata\MetadataCollection;
 use Zf2ClientMoysklad\Exception\RuntimeException;
+use Zf2ClientMoysklad\Repository\BasicRepository;
 use Zf2ClientMoysklad\Repository\RepositoryAbstract;
 
 class EntityManager
@@ -38,7 +39,7 @@ class EntityManager
         $repository = $classMetadata->getRepository();
 
         if (!class_exists($repository)) {
-            throw new RuntimeException("Could not found repository class ".$repository);
+            return new BasicRepository($entityName, $this->unitOfWork);
         }
 
         return new $repository($entityName, $this->unitOfWork);

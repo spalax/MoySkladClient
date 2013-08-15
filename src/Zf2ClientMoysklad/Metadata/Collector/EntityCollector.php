@@ -103,6 +103,15 @@ class EntityCollector implements CollectorInterface
                     $el->addAttribute($tokens[count($tokens)-1], $value);
                     break;
                 } else {
+                    foreach ($el->children() as $child) {
+                        if ($child->getName() == $token) {
+                            $el = $child;
+                            if ((count($tokens)-1) == $i) {
+                                $el[0] = $value;
+                            }
+                            continue(2);
+                        }
+                    }
                     $el = $el->addChild($token, ((count($tokens)-1) == $i ? $value : null));
                 }
             }
