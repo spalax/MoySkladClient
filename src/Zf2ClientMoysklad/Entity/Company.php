@@ -44,6 +44,20 @@ class Company implements EntityInterface
     /**
      * @var string
      *
+     * @MS\Column(name="requisite:attributes():legalAddress")
+     */
+    protected $legalAddress;
+
+    /**
+     * @var string
+     *
+     * @MS\Column(name="requisite:attributes():actualAddress")
+     */
+    protected $actualAddress;
+
+    /**
+     * @var string
+     *
      * @MS\Column(name="contact:attributes():phones")
      */
     protected $phones;
@@ -68,6 +82,29 @@ class Company implements EntityInterface
      * @MS\Column(name="contact:attributes():email")
      */
     protected $email;
+
+    /**
+     * @var string
+     *
+     * @MS\Column(name="attributes():companyType")
+     */
+    protected $companyType;
+
+    /**
+     * @param string $companyType
+     */
+    public function setCompanyType($companyType)
+    {
+        $this->companyType = $companyType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCompanyType()
+    {
+        return $this->companyType;
+    }
 
     /**
      * @param string $address
@@ -195,5 +232,37 @@ class Company implements EntityInterface
     public function getUuid()
     {
         return $this->uuid;
+    }
+
+    /**
+     * @param string $actualAddress
+     */
+    public function setActualAddress($actualAddress)
+    {
+        $this->actualAddress = $actualAddress;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActualAddress()
+    {
+        return $this->actualAddress;
+    }
+
+    /**
+     * @param string $legalAddress
+     */
+    public function setLegalAddress($legalAddress)
+    {
+        $this->legalAddress = $legalAddress;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLegalAddress()
+    {
+        return $this->legalAddress;
     }
 }
