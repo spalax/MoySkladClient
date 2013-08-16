@@ -72,6 +72,9 @@ class EntityCollector implements CollectorInterface
                     }
                     $el = $el->attributes();
                 } else {
+                    if (!isset($el->{$token})) {
+                        return '';
+                    }
                     $el = $el->{$token};
                 }
             }
