@@ -91,6 +91,29 @@ class Company implements EntityInterface
     protected $companyType;
 
     /**
+     * @var string
+     *
+     * @MS\Column(name="tags:tag")
+     */
+    protected $tagLabel;
+
+    /**
+     * @param string $tagLabel
+     */
+    public function setTagLabel($tagLabel)
+    {
+        $this->tagLabel = $tagLabel;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTagLabel()
+    {
+        return $this->tagLabel;
+    }
+
+    /**
      * @param string $companyType
      */
     public function setCompanyType($companyType)
