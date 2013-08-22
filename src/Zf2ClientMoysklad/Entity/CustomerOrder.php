@@ -30,6 +30,13 @@ class CustomerOrder implements EntityInterface
     /**
      * @var string
      *
+     * @MS\Column(name="attributes():name")
+     */
+    protected $name;
+
+    /**
+     * @var string
+     *
      * @MS\Column(name="attributes():sourceStoreUuid", required="true")
      */
     protected $sourceStoreUuid;
@@ -129,6 +136,22 @@ class CustomerOrder implements EntityInterface
     public function getSum()
     {
         return $this->sum;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
