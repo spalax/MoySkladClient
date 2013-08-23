@@ -26,7 +26,7 @@ class OrderPosition implements EntityInterface
     /**
      * @var number
      *
-     * @MS\Column(name="attributes():quantity")
+     * @MS\Column(name="attributes():quantity", required="true")
      */
     protected $quantity;
 
