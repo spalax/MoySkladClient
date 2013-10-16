@@ -268,7 +268,7 @@ class EntityCollector implements CollectorInterface
                 return $propertyArr;
             }
         }
-        
+
         throw new RuntimeException("Invalid targetEntity this Entity could not be found by entity scanner");
     }
 
@@ -279,7 +279,7 @@ class EntityCollector implements CollectorInterface
      */
     protected function collectDataForClass(ClassScanner $classScanner, array $allClasses)
     {
-        if ($classScanner->isInterface()) return false;
+        if ($classScanner->isInterface() || $classScanner->isAbstract()) return false;
 
         $classArr = array('properties'=>array());
 
