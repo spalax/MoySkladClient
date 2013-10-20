@@ -1,11 +1,7 @@
 {
-    "name": "milcrew/zf2-client-moysklad",
+    "name": "mils/zf2-client-moysklad",
     "description": "Zend Framework 2 module for moysklad service",
     "authors": [
-        {
-            "name": "Milcrew",
-            "email": "milcrew@gmail.com"
-        },
         {
             "name": "Milotskiy Alexey",
             "email": "spalaxinco@gmail.com"
@@ -18,7 +14,7 @@
     "require": {
         "php": ">=5.3",
         "zendframework/zendframework": ">=2.0.0",
-        "milcrew/zf2-libs": "dev-master"
+        "mils/zf2-libs": "dev-master"
     },
     "autoload": {
         "psr-0": {
