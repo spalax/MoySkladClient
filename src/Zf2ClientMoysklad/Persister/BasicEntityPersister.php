@@ -145,18 +145,17 @@ class BasicEntityPersister implements PersisterInterface
     }
 
     /**
-     * @param array $criteria
+     * @param array $criteria [OPTIONAL]
      * @param int $offset [OPTIONAL]
      * @param int $limit [OPTIONAL]
      * @return EntityInterface[]
      */
-    public function loadAll(array $criteria, $offset = 0, $limit = null)
+    public function loadAll(array $criteria = array(), $offset = null, $limit = null)
     {
-        $httpUri = $this->processCriteria($criteria, $offset);
+        $httpUri = $this->processCriteria($criteria);
         $entities = array();
 
-        $query['start'] = $offset;
-        $query['count'] = $limit = is_null($limit) ? 1000 : $limit;
+        $offset = is_null($offset) ? 0 : $offset;
 
         if ($limit > 0) {
             $delta = intval($limit / 1000);
@@ -175,6 +174,19 @@ class BasicEntityPersister implements PersisterInterface
 
             if ($lastLimit) {
                $entities = array_merge($entities, $this->partiallyRequest($httpUri, $offset, $lastLimit));
+            }
+        } else if (is_null($limit)) {
+            for ($offset = 0 ;; $offset+=1000) {
+                $result = $this->partiallyRequest($httpUri, $offset, 1000);
+
+                if (!count($result)) {
+                    return $entities;
+                }
+
+                $entities = array_merge($entities, $result);
+                if (count($result) < 1000) {
+                    return $entities;
+                }
             }
         }
 

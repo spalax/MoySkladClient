@@ -1,11 +1,12 @@
 <?php
 namespace Zf2ClientMoysklad;
 
+use Composer\Autoload\ClassLoader;
 use Zend\Code\Annotation\AnnotationManager;
+use Zend\Loader\StandardAutoloader;
 use Zf2ClientMoysklad\Entity\EntityInterface;
 use Zf2ClientMoysklad\Code\Annotation;
 use Zf2ClientMoysklad\Metadata\MetadataCollection;
-use Zf2ClientMoysklad\Exception\RuntimeException;
 use Zf2ClientMoysklad\Repository\BasicRepository;
 use Zf2ClientMoysklad\Repository\RepositoryAbstract;
 
@@ -16,6 +17,8 @@ class EntityManager
      */
     protected $unitOfWork = null;
 
+    protected $zendLoader = null;
+
     /**
      * @var MetadataCollection
      */
@@ -23,6 +26,13 @@ class EntityManager
 
     public function __construct(UnitOfWork $unitOfWork, MetadataCollection $metadataCollection)
     {
+
+        $this->zendLoader = new StandardAutoloader(array(
+                  'namespaces' => array(
+                         'Zf2ClientMoysklad' => __DIR__
+                   )
+        ));
+
         $this->unitOfWork = $unitOfWork;
         $this->metadataCollection = $metadataCollection;
     }
@@ -38,11 +48,12 @@ class EntityManager
         $classMetadata = $this->metadataCollection->getClassMetadata($entityName);
         $repository = $classMetadata->getRepository();
 
-        if (!class_exists($repository)) {
+        if (($className = $this->zendLoader->autoload($repository)) === false) {
             return new BasicRepository($entityName, $this->unitOfWork);
         }
 
-        return new $repository($entityName, $this->unitOfWork);
+        $className = '\\'.$className;
+        return new $className($entityName, $this->unitOfWork);
     }
 
     /**

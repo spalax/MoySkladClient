@@ -13,7 +13,7 @@
     "license": "MIT",
     "require": {
         "php": ">=5.3",
-        "zendframework/zendframework": ">=2.0.0",
+        "zendframework/zend-loader": ">=2.2.3",
         "spalax/zf2-libs": "dev-master"
     },
     "autoload": {

@@ -12,12 +12,12 @@ interface PersisterInterface
     public function load(array $criteria);
 
     /**
-     * @param array $criteria
-     * @param int $offset
-     * @param int $limit
+     * @param array $criteria [OPTIONAL]
+     * @param int $offset [OPTIONAL]
+     * @param int $limit [OPTIONAL]
      * @return EntityInterface[]
      */
-    public function loadAll(array $criteria, $offset = 0, $limit = 1000);
+    public function loadAll(array $criteria = array(), $offset = null, $limit = null);
 
     /**
      * @param EntityInterface $entity
