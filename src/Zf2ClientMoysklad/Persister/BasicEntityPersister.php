@@ -40,6 +40,30 @@ class BasicEntityPersister implements PersisterInterface
     }
 
     /**
+     * Processing criteria value or array
+     * of values, it is very useful to find
+     * by OR condition in remote Storage (MS)
+     *
+     * @param string $field
+     * @param string $cond
+     * @param mixed $value
+     *
+     * @return array
+     */
+    protected function processCriteriaValue($field, $cond, $value)
+    {
+        $result = array();
+        if (is_array($value) || $value instanceof \Traversable) {
+            foreach ($value as $v) {
+                $result[] = $field.$cond.$v;
+            }
+        } else {
+            $result[] = $field.$cond.$value;
+        }
+        return $result;
+    }
+
+    /**
      * Not all criterias could be added to the
      * filtration, please consult with defined
      * link bellow, to the understand which filtration options
@@ -53,22 +77,31 @@ class BasicEntityPersister implements PersisterInterface
     protected function processCriteria(array $criteria)
     {
         $suffix = array();
+
         foreach ($criteria as $criteriaKey => $criteriaValue) {
+
+            $criteriaKey = preg_replace('/\s/', '', $criteriaKey);
             if (!preg_match('/^(?P<field>.*?)(?P<cond>(=|>=|<=|>|<))$/', $criteriaKey, $matches)) {
                 throw new InvalidArgumentException("Key of criteria must have a condition");
             }
 
             $property = $this->classMetadata->getProperty($matches['field']);
+
             if (!$property || !$property->getCriteria()) {
                 throw new InvalidArgumentException("Criteria not found, or not supported for API");
             }
-            $suffix[] = $matches['field'].$matches['cond'].$criteriaValue;
+
+            $suffix = array_merge($suffix,
+                                  $this->processCriteriaValue($matches['field'],
+                                                              $matches['cond'],
+                                                              $criteriaValue));
         }
 
         $query = array();
         if (count($suffix)) {
-            $query['filter'] = urlencode(join(';',$suffix));
+            $query['filter'] = join(';',$suffix);
         }
+
 
         $uri = new Http($this->classMetadata->getServiceCollectionPath());
         $uri->setQuery($query);
