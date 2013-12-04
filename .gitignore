@@ -1,8 +1,9 @@
+composer.phar
+composer.lock
+.buildpath
+.settings
+.idea/*
 *~
-.idea
-INSTALL.txt
-LICENSE.txt
-README.txt
-demos/
-extras/documentation
-src/ZfcUser
+fcgi-bin/
+temporary/*
+vendor/*
