@@ -1,12 +1,14 @@
 <?php
-namespace Zf2ClientMoysklad\Entity;
+namespace Zf2ClientMoysklad\Entity\CustomerOrder;
+
+use Zf2ClientMoysklad\Entity\EntityInterface;
 
 /**
  * Order position entity
  *
  * @MS\XML(rootElement="customerOrderPosition")
  */
-class OrderPosition implements EntityInterface
+class Position implements EntityInterface
 {
     /**
      * @var string
