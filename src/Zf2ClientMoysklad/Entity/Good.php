@@ -30,7 +30,7 @@ class Good implements EntityInterface
     /**
      * @var number
      *
-     * @MS\Column(name="salePrices:price:attributes():value")
+     * @MS\Column(name="attributes():salePrice")
      */
     protected $price = 0;
 
