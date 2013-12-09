@@ -20,16 +20,8 @@ $goodEntity = $entityManager->find('Zf2ClientMoysklad\Entity\Good',
 
 
 $entityManager->persist($goodEntity);
-
-
-/* @var $salePrices Good\Price[] */
-$salePrices = $goodEntity->getSalePrices();
-
-foreach ($salePrices as $price) {
-    $price->setValue(50000);
-    break;
-}
-
+$goodEntity->setMinPrice(600000);
+$goodEntity->setBuyPrice(888888);
 $entityManager->flush();
 
 /*---------------------------------------------------------------------------------*/

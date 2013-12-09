@@ -36,6 +36,20 @@ class Good implements EntityInterface
     protected $price = 0;
 
     /**
+     * @var number
+     *
+     * @MS\Column(name="attributes():minPrice")
+     */
+    protected $minPrice = 0;
+
+    /**
+     * @var number
+     *
+     * @MS\Column(name="attributes():buyPrice")
+     */
+    protected $buyPrice = 0;
+
+    /**
      * @var string
      *
      * @MS\Column(name="attributes():parentId")
@@ -63,7 +77,7 @@ class Good implements EntityInterface
      *
      * @MS\Column(name="attributes():parentUuid")
      */
-    protected $parentUuid = '';
+    protected $parentUuid;
 
     /**
      * @var number
@@ -392,5 +406,37 @@ class Good implements EntityInterface
     public function getPrice()
     {
         return $this->price;
+    }
+
+    /**
+     * @param number $buyPrice
+     */
+    public function setBuyPrice($buyPrice)
+    {
+        $this->buyPrice = $buyPrice;
+    }
+
+    /**
+     * @return number
+     */
+    public function getBuyPrice()
+    {
+        return $this->buyPrice;
+    }
+
+    /**
+     * @param number $minPrice
+     */
+    public function setMinPrice($minPrice)
+    {
+        $this->minPrice = $minPrice;
+    }
+
+    /**
+     * @return number
+     */
+    public function getMinPrice()
+    {
+        return $this->minPrice;
     }
 }
