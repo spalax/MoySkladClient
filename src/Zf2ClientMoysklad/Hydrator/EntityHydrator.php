@@ -88,6 +88,7 @@ class EntityHydrator
                 }
                 continue;
             } else {
+                if (empty($extracted)) continue;
                 $entity->{$property->getHandler()}((string)$extracted);
             }
         }
