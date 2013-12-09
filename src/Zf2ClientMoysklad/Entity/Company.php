@@ -17,7 +17,7 @@ class Company implements EntityInterface
      * @MS\Id
      * @MS\Column(name="uuid")
      */
-    protected $uuid = '';
+    protected $uuid;
 
     /**
      * @var string
@@ -25,7 +25,7 @@ class Company implements EntityInterface
      * @MS\Column(name="id")
      * @MS\Criteria
      */
-    protected $id = '';
+    protected $id;
 
     /**
      * @var number

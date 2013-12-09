@@ -32,6 +32,20 @@ class Price implements EntityInterface
     protected $value;
 
     /**
+     * @var string
+     *
+     * @MS\Column(name="attributes():readMode")
+     */
+    protected $readMode;
+
+    /**
+     * @var string
+     *
+     * @MS\Column(name="attributes():changeMode")
+     */
+    protected $changeMode;
+
+    /**
      * @param string $uuid
      */
     public function setUuid($uuid)
@@ -77,5 +91,37 @@ class Price implements EntityInterface
     public function getValue()
     {
         return $this->value;
+    }
+
+    /**
+     * @param string $changeMode
+     */
+    public function setChangeMode($changeMode)
+    {
+        $this->changeMode = $changeMode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChangeMode()
+    {
+        return $this->changeMode;
+    }
+
+    /**
+     * @param string $readMode
+     */
+    public function setReadMode($readMode)
+    {
+        $this->readMode = $readMode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReadMode()
+    {
+        return $this->readMode;
     }
 }

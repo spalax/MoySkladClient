@@ -36,14 +36,14 @@ class EnterPosition implements EntityInterface
      *
      * @MS\Column(name="basePrice:attributes():sum", required="true")
      */
-    protected $basePrice = 0;
+    protected $basePrice;
 
     /**
      * @var number
      *
      * @MS\Column(name="price:attributes():sum", required="true")
      */
-    protected $price = 0;
+    protected $price;
 
     /**
      * @param number $basePrice

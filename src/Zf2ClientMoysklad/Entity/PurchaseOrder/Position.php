@@ -37,28 +37,28 @@ class Position implements EntityInterface
      *
      * @MS\Column(name="basePrice:attributes():sum", required="true")
      */
-    protected $basePriceSum = 0;
+    protected $basePriceSum;
 
     /**
      * @var number
      *
      * @MS\Column(name="basePrice:attributes():sumInCurrency")
      */
-    protected $basePriceSumInCurrency = 0;
+    protected $basePriceSumInCurrency;
 
     /**
      * @var number
      *
      * @MS\Column(name="price:attributes():sum")
      */
-    protected $priceSum = 0;
+    protected $priceSum;
 
     /**
      * @var number
      *
      * @MS\Column(name="price:attributes():sumInCurrency")
      */
-    protected $priceSumInCurrency = 0;
+    protected $priceSumInCurrency;
 
     /**
      * @var number

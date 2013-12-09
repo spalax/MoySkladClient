@@ -18,7 +18,7 @@ class Good implements EntityInterface
      * @MS\Id
      * @MS\Column(name="uuid")
      */
-    protected $uuid = '';
+    protected $uuid;
 
     /**
      * @var string
@@ -26,21 +26,21 @@ class Good implements EntityInterface
      * @MS\Column(name="id")
      * @MS\Criteria
      */
-    protected $id = '';
+    protected $id;
 
     /**
      * @var number
      *
      * @MS\Column(name="attributes():salePrice")
      */
-    protected $price = 0;
+    protected $price;
 
     /**
      * @var string
      *
      * @MS\Column(name="attributes():parentId")
      */
-    protected $parentId = '';
+    protected $parentId;
 
     /**
      * @var string
@@ -48,7 +48,7 @@ class Good implements EntityInterface
      * @MS\Column(name="attributes():updated")
      * @MS\Criteria
      */
-    protected $updated = '';
+    protected $updated;
 
     /**
      * @var string
@@ -56,14 +56,14 @@ class Good implements EntityInterface
      * @MS\Column(name="attributes():updatedBy")
      * @MS\Criteria
      */
-    protected $updatedBy = '';
+    protected $updatedBy;
 
     /**
      * @var string
      *
      * @MS\Column(name="attributes():parentUuid")
      */
-    protected $parentUuid = '';
+    protected $parentUuid;
 
     /**
      * @var number
@@ -71,14 +71,14 @@ class Good implements EntityInterface
      * @MS\Column(name="code")
      * @MS\Criteria
      */
-    protected $code = 0;
+    protected $code;
 
     /**
      * @var string
      *
      * @MS\Column(name="accountId")
      */
-    protected $accountId = '';
+    protected $accountId;
 
     /**
      * @var string
@@ -86,7 +86,7 @@ class Good implements EntityInterface
      * @MS\Column(name="company")
      * @MS\Criteria
      */
-    protected $company = '';
+    protected $company;
 
     /**
      * @var string
@@ -94,7 +94,7 @@ class Good implements EntityInterface
      * @MS\Column(name="externalcode")
      * @MS\Criteria
      */
-    protected $externalCode = '';
+    protected $externalCode;
 
     /**
      * @var string
@@ -102,7 +102,7 @@ class Good implements EntityInterface
      * @MS\Column(name="attributes():productCode")
      * @MS\Criteria
      */
-    protected $productCode = '';
+    protected $productCode;
 
     /**
      * @var string
@@ -110,19 +110,19 @@ class Good implements EntityInterface
      * @MS\Column(name="description")
      * @MS\Criteria
      */
-    protected $description = '';
+    protected $description;
 
     /**
      * @var string
      *
      * @MS\Column(name="attributes():name")
      */
-    protected $name = '';
+    protected $name;
 
     /**
      * @var string
      */
-    protected $article = 0;
+    protected $article;
 
     /**
      * @var \SplObjectStorage
@@ -144,6 +144,14 @@ class Good implements EntityInterface
         if (!$this->salePrices->contains($price)) {
             $this->salePrices->attach($price);
         }
+    }
+
+    /**
+     * @param \SplObjectStorage $salePrices
+     */
+    public function setSalePrices(\SplObjectStorage $salePrices)
+    {
+        $this->salePrices = $salePrices;
     }
 
     /**

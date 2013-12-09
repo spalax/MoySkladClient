@@ -17,7 +17,7 @@ class GoodFolder implements EntityInterface
      * @MS\Id
      * @MS\Column(name="uuid")
      */
-    protected $uuid = '';
+    protected $uuid;
 
     /**
      * @var string
@@ -25,35 +25,35 @@ class GoodFolder implements EntityInterface
      * @MS\Column(name="id")
      * @MS\Criteria
      */
-    protected $id = '';
+    protected $id;
 
     /**
      * @var string
      *
      * @MS\Column(name="accountId")
      */
-    protected $accountId = '';
+    protected $accountId;
 
     /**
      * @var string
      *
      * @MS\Column(name="attributes():name")
      */
-    protected $name = '';
+    protected $name;
 
     /**
      * @var string
      *
      * @MS\Column(name="externalcode")
      */
-    protected $externalCode = '';
+    protected $externalCode;
 
     /**
      * @var string
      *
      * @MS\Column(name="attributes():updated")
      */
-    protected $updated = '';
+    protected $updated;
 
     /**
      * @param string $accountId

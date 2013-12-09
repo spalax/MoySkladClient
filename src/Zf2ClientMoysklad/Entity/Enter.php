@@ -18,21 +18,21 @@ class Enter implements EntityInterface
      * @MS\Id
      * @MS\Column(name="uuid")
      */
-    protected $uuid = '';
+    protected $uuid;
 
     /**
      * @var \DateTime
      *
      * @MS\Column(name="attributes():created")
      */
-    protected $created = null;
+    protected $created;
 
     /**
      * @var \DateTime
      *
      * @MS\Column(name="attributes():updated")
      */
-    protected $updated = null;
+    protected $updated;
 
     /**
      * @var \SplObjectStorage

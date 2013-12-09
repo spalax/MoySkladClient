@@ -14,84 +14,84 @@ class StockItem implements EntityInterface
      *
      * @MS\Column(name="attributes():productCode")
      */
-    protected $productCode = '';
+    protected $productCode;
 
     /**
      * @var int
      *
      * @MS\Column(name="attributes():quantity")
      */
-    protected $quantity = 0;
+    protected $quantity;
 
     /**
      * @var int
      *
      * @MS\Column(name="attributes():stock")
      */
-    protected $stock = 0;
+    protected $stock;
 
     /**
      * @var int
      *
      * @MS\Column(name="attributes():reserve")
      */
-    protected $reserve = 0;
+    protected $reserve;
 
     /**
      * @var number
      *
      * @MS\Column(name="attributes():sumTotal")
      */
-    protected $sumTotal = '';
+    protected $sumTotal;
 
     /**
      * @var string
      *
      * @MS\Column(name="attributes():salePrice")
      */
-    protected $salePrice = '';
+    protected $salePrice;
 
     /**
      * @var string
      *
      * @MS\Column(name="attributes():category")
      */
-    protected $category = '';
+    protected $category;
 
     /**
      * @var string
      *
      * @MS\Column(name="attributes():externalCode")
      */
-    protected $externalCode = '';
+    protected $externalCode;
 
     /**
      * @var string
      *
      * @MS\Column(name="attributes():parentUuid")
      */
-    protected $parentUuid = '';
+    protected $parentUuid;
 
     /**
      * @var string
      *
      * @MS\Column(name="attributes():parentId")
      */
-    protected $parentId = '';
+    protected $parentId;
 
     /**
      * @var string
      *
      * @MS\Column(name="goodRef:attributes():id")
      */
-    protected $goodId = '';
+    protected $goodId;
 
     /**
      * @var string
      *
      * @MS\Column(name="goodRef:attributes():uuid")
      */
-    protected $goodUuid = '';
+    protected $goodUuid;
 
     /**
      * @param string $category
