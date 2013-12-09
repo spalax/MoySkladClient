@@ -1,6 +1,8 @@
 <?php
 namespace Zf2ClientMoysklad\Entity;
 
+use Zf2ClientMoysklad\Entity\CustomerOrder\Position;
+
 /**
  * Order entity
  *
@@ -14,16 +16,9 @@ class CustomerOrder implements EntityInterface
     /**
      * @var string
      *
-     * @MS\Column(name="id")
-     * @MS\Criteria
-     */
-    protected $id;
-
-    /**
-     * @var string
-     *
      * @MS\Id
      * @MS\Column(name="uuid")
+     * @MS\Criteria
      */
     protected $uuid;
 
@@ -33,6 +28,14 @@ class CustomerOrder implements EntityInterface
      * @MS\Column(name="attributes():name")
      */
     protected $name;
+
+    /**
+     * @var string
+     *
+     * @MS\Column(name="externalcode")
+     * @MS\Criteria
+     */
+    protected $externalCode;
 
     /**
      * @var string
@@ -77,9 +80,16 @@ class CustomerOrder implements EntityInterface
     protected $sum;
 
     /**
+     * @var number
+     *
+     * @MS\Column(name="sum:attributes():sumInCurrency")
+     */
+    protected $sumInCurrency;
+
+    /**
      * @var \SplObjectStorage
      *
-     * @MS\OneToMany(targetEntity="Zf2ClientMoysklad\Entity\OrderPosition", name="customerOrderPosition")
+     * @MS\OneToMany(targetEntity="Zf2ClientMoysklad\Entity\CustomerOrder\Position", name="customerOrderPosition")
      */
     protected $orderPosition;
 
@@ -89,25 +99,25 @@ class CustomerOrder implements EntityInterface
     }
 
     /**
-     * @param string $id
+     * @param string $externalCode
      */
-    public function setId($id)
+    public function setExternalCode($externalCode)
     {
-        $this->id = $id;
+        $this->externalCode = $externalCode;
     }
 
     /**
      * @return string
      */
-    public function getId()
+    public function getExternalCode()
     {
-        return $this->id;
+        return $this->externalCode;
     }
 
     /**
-     * @param OrderPosition $orderPosition
+     * @param Position $orderPosition
      */
-    public function addOrderPosition(OrderPosition $orderPosition)
+    public function addOrderPosition(Position $orderPosition)
     {
         if (!$this->orderPosition->contains($orderPosition)) {
             $this->orderPosition->attach($orderPosition);
@@ -239,7 +249,7 @@ class CustomerOrder implements EntityInterface
      */
     public function setApplicable($applicable)
     {
-        $this->applicable = ($applicable ? 'true' : 'false');
+        $this->applicable = $applicable;
     }
 
     /**
@@ -248,5 +258,21 @@ class CustomerOrder implements EntityInterface
     public function getApplicable()
     {
         return $this->applicable;
+    }
+
+    /**
+     * @param number $sumInCurrency
+     */
+    public function setSumInCurrency($sumInCurrency)
+    {
+        $this->sumInCurrency = $sumInCurrency;
+    }
+
+    /**
+     * @return number
+     */
+    public function getSumInCurrency()
+    {
+        return $this->sumInCurrency;
     }
 }

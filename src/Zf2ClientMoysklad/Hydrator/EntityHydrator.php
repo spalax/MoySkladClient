@@ -3,7 +3,7 @@ namespace Zf2ClientMoysklad\Hydrator;
 
 use Zf2ClientMoysklad\Entity\EntityInterface;
 use Zf2ClientMoysklad\Metadata\ClassMetadata;
-use Zf2Libs\Xml\SimpleXmlElement;
+use Zf2ClientMoysklad\Xml\SimpleXmlElement;
 
 class EntityHydrator
 {

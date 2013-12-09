@@ -1,6 +1,7 @@
 {
     "name": "spalax/zf2-client-moysklad",
     "description": "Zend Framework 2 module for moysklad service",
+    "license": "MIT License",
     "authors": [
         {
             "name": "Mylotskyi Oleksii",
@@ -8,13 +9,26 @@
         }
     ],
     "keywords": [
-        "api", "client"
+        "api", "client", "zendframework2", "zend-code",
+        "zend-loader", "zend-stdlib", "zend-http", "zend-uri"
+    ],
+    "homepage": "http://milsdev.com/",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Spalax/zf2-libs.git"
+        }
     ],
     "license": "MIT",
     "require": {
         "php": ">=5.3",
-        "zendframework/zendframework": ">=2.0.0",
-        "spalax/zf2-libs": "0.0.*"
+        "zendframework/zend-code": ">=2.0.0",
+        "zendframework/zend-loader": ">=2.0.0",
+        "zendframework/zend-stdlib": ">=2.0.0",
+        "zendframework/zend-http": ">=2.0.0",
+        "zendframework/zend-uri": ">=2.0.0",
+        "zendframework/zend-servicemanager": ">=2.0.0",
+        "zendframework/zend-modulemanager": ">=2.0.0"
     },
     "autoload": {
         "psr-0": {
