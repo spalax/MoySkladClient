@@ -37,7 +37,7 @@ class EntityHydrator
 
                 foreach ($value as $entity) {
                     $xmlEntry = $hydrator->extract($entity);
-                    $xmlElement->appendXMLElement($xmlEntry);
+                    $serializer($xmlEntry, $xmlElement);
 
                     if (!$xmlEntry instanceof \SimpleXMLElement) {
                         throw new Exception\RuntimeException("XmlEntry does no SimpleXMLElement type,
@@ -64,7 +64,9 @@ class EntityHydrator
     {
         foreach($this->metadata->getProperties() as $property) {
             $extractor = $property->getExtractor();
-            $extracted = $extractor($data);
+
+            /* @var $extracted \SimpleXMLElement */
+            $extracted = $extractor($data); // Get SimpleXMLElement from response XML tree.
 
             if ($property->isOneToMany()) {
                 $splObjectStorage = $entity->{$property->getGetter()}();
@@ -74,7 +76,7 @@ class EntityHydrator
                 $hydrator = new EntityHydrator($entityMetadata);
 
                 $className = $entityMetadata->getName();
-                foreach ($extracted as $xmlElement) {
+                foreach ($extracted->children() as $xmlElement) {
                     $entity->{$property->getHandler()}($hydrator->hydrate($xmlElement,
                                                                           new $className()));
                 }

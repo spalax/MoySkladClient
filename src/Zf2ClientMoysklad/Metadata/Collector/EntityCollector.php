@@ -84,12 +84,13 @@ class EntityCollector implements CollectorInterface
 
     /**
      * @param string $fieldName
-     * @param boolean $isRequired
+     * @param boolean $isRequired [OPTIONAL default = false]
+     * @param boolean $isContainer [OPTIONAL default = false] is serializing fieldName has to contain all element as children
      * @return callable
      */
-    protected function buildFieldSerializer($fieldName, $isRequired)
+    protected function buildFieldSerializer($fieldName, $isRequired = false, $isContainer = false)
     {
-        return function ($value, \SimpleXMLElement $element) use ($fieldName, $isRequired) {
+        return function ($value, \SimpleXMLElement $element) use ($fieldName, $isRequired, $isContainer) {
             if (is_null($value)){
               if (!$isRequired) {
                   return $element;
@@ -106,16 +107,41 @@ class EntityCollector implements CollectorInterface
                     $el->addAttribute($tokens[count($tokens)-1], $value);
                     break;
                 } else {
+                    // Iteration over the children
+                    // already created element.
                     foreach ($el->children() as $child) {
                         if ($child->getName() == $token) {
                             $el = $child;
                             if ((count($tokens)-1) == $i) {
-                                $el[0] = $value;
+                                // This construction should work with [element:attribute():attr]
+                                if (!$value instanceof \SimpleXMLElement) {
+                                    $el[0] = $value;
+                                } else { // This construction should work when you have element
+                                    // who is container and you populate it with children.
+                                    $el = $el->appendXMLElement($value);
+                                }
                             }
                             continue(2);
                         }
                     }
-                    $el = $el->addChild($token, ((count($tokens)-1) == $i ? $value : null));
+
+                    // Check whether cycle pointed to the last token
+                    // from tokens. If path [a:b:c], it is check if current
+                    // token is [c].
+                    if (((count($tokens)-1) == $i)) {
+                        if (!$value instanceof \SimpleXMLElement) {
+                            $el = $el->addChild($token, $value);
+                        } else {
+                            if ($isContainer) {
+                                $el = $el->addChild($token);
+                            }
+                            $el = $el->appendXMLElement($value);
+                        }
+                    } else {
+                        // Add child if it is middle of the elements path
+                        $el = $el->addChild($token);
+                    }
+
                 }
             }
             return $element;
@@ -248,7 +274,8 @@ class EntityCollector implements CollectorInterface
         $propertyArr['name'] = $propertyScanner->getName();
         $propertyArr['field'] = $annotation->getName();
         $propertyArr['extractor'] = $this->buildFieldExtractor($annotation->getName());
-        $propertyArr['serializer'] = $this->buildFieldSerializer($annotation->getName(), false);
+        $propertyArr['serializer'] = $this->buildFieldSerializer($annotation->getName(),
+                                                                 false, $annotation->isContainer());
         $propertyArr['handler'] = $this->detectPropertyAdd($classScanner, $propertyScanner);
         $propertyArr['getter'] = $this->detectPropertyGet($classScanner, $propertyScanner);
 
