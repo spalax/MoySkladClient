@@ -1,5 +1,6 @@
 <?php
 namespace Zf2ClientMoysklad\Entity;
+use Zf2ClientMoysklad\Entity\Good\Price;
 
 /**
  * Good entity
@@ -122,6 +123,36 @@ class Good implements EntityInterface
      * @var string
      */
     protected $article = 0;
+
+    /**
+     * @var \SplObjectStorage
+     *
+     * @MS\OneToMany(targetEntity="Zf2ClientMoysklad\Entity\Good\Price", name="salePrices", isContainer="1")
+     */
+    protected $salePrices;
+
+    public function __construct()
+    {
+        $this->salePrices = new \SplObjectStorage();
+    }
+
+    /**
+     * @param Price $price
+     */
+    public function addSalePrices(Price $price)
+    {
+        if (!$this->salePrices->contains($price)) {
+            $this->salePrices->attach($price);
+        }
+    }
+
+    /**
+     * @return \SplObjectStorage
+     */
+    public function getSalePrices()
+    {
+        return $this->salePrices;
+    }
 
     /**
      * @param string $productCode

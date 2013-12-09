@@ -5,7 +5,14 @@ ini_set('display_errors', true);
 
 chdir(__DIR__);
 
-if (!(@include_once __DIR__ . '/../vendor/autoload.php')) {
+if (file_exists(__DIR__ . '/../../../autoload.php')) {
+    $includePath = __DIR__ . '/../../../autoload.php';
+} else {
+    $includePath = __DIR__ . '/../vendor/autoload.php';
+}
+
+
+if (!(@include_once $includePath)) {
     throw new \RuntimeException('Error: vendor/autoload.php could not be found. Did you run php composer.phar install?');
 }
 
