@@ -76,6 +76,12 @@ class EntityHydrator
                 $hydrator = new EntityHydrator($entityMetadata);
 
                 $className = $entityMetadata->getName();
+
+                if (!$extracted) {
+                    throw new Exception\RuntimeException("Something gone wrong,
+                                                         data could not be parsed ".$data->asXML());
+                }
+
                 foreach ($extracted->children() as $xmlElement) {
                     $entity->{$property->getHandler()}($hydrator->hydrate($xmlElement,
                                                                           new $className()));
