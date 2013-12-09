@@ -1,6 +1,5 @@
-zf2-client-moysklad
-===================
 Client for http://www.moysklad.ru/
+===================
 
 To setup library you have to had composer.phar.
 You can download it using this command:
@@ -21,3 +20,6 @@ or
 ```
 
 Simple usage examples you can found in demo/ folder.
+
+If your project already includes Zend Framework 2, this module could be installed as Zend Framework 2 module.
+You should only copy config/zf2clientmoysklad.global.php to your config/autoload and change commented line with your connection credentials.
