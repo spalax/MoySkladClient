@@ -58,11 +58,12 @@ class EntityCollector implements CollectorInterface
 
     /**
      * @param string $fieldName
+     * @param bool $isCollection [OPTIONAL default == false]
      * @return callable
      */
-    protected function buildFieldExtractor($fieldName)
+    protected function buildFieldExtractor($fieldName, $isCollection = false)
     {
-        return function (\SimpleXMLElement $element) use ($fieldName) {
+        return function (\SimpleXMLElement $element) use ($fieldName, $isCollection) {
             $el = $element;
             $tokens = explode(':', $fieldName);
             foreach ($tokens as $token) {
@@ -77,6 +78,9 @@ class EntityCollector implements CollectorInterface
                     }
                     $el = $el->{$token};
                 }
+            }
+            if ($isCollection) {
+                return $el->children();
             }
             return $el;
         };
@@ -273,7 +277,7 @@ class EntityCollector implements CollectorInterface
 
         $propertyArr['name'] = $propertyScanner->getName();
         $propertyArr['field'] = $annotation->getName();
-        $propertyArr['extractor'] = $this->buildFieldExtractor($annotation->getName());
+        $propertyArr['extractor'] = $this->buildFieldExtractor($annotation->getName(), $annotation->isContainer());
         $propertyArr['serializer'] = $this->buildFieldSerializer($annotation->getName(),
                                                                  false, $annotation->isContainer());
         $propertyArr['handler'] = $this->detectPropertyAdd($classScanner, $propertyScanner);

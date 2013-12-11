@@ -82,9 +82,9 @@ class EntityHydrator
                                                          data could not be parsed ".$data->asXML());
                 }
 
-                foreach ($extracted->children() as $xmlElement) {
+                foreach ($extracted as $xmlElement) {
                     $entity->{$property->getHandler()}($hydrator->hydrate($xmlElement,
-                                                                          new $className()));
+                        new $className()));
                 }
                 continue;
             } else {
