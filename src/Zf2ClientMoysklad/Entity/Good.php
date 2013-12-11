@@ -40,14 +40,14 @@ class Good implements EntityInterface
      *
      * @MS\Column(name="attributes():minPrice")
      */
-    protected $minPrice = 0;
+    protected $minPrice;
 
     /**
      * @var number
      *
      * @MS\Column(name="attributes():buyPrice")
      */
-    protected $buyPrice = 0;
+    protected $buyPrice;
 
     /**
      * @var string
