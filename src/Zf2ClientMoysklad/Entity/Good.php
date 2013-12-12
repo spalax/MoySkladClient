@@ -50,11 +50,67 @@ class Good implements EntityInterface
     protected $buyPrice;
 
     /**
+     * @var number
+     *
+     * @MS\Column(name="attributes():minimumBalance")
+     */
+    protected $minimumBalance;
+
+    /**
+     * @var number
+     *
+     * @MS\Column(name="attributes():weight")
+     */
+    protected $weight;
+
+    /**
+     * @var number
+     *
+     * @MS\Column(name="attributes():volume")
+     */
+    protected $volume;
+
+    /**
      * @var string
      *
      * @MS\Column(name="attributes():parentId")
      */
     protected $parentId;
+
+    /**
+     * @var string
+     *
+     * @MS\Column(name="attributes():isSerialTrackable")
+     */
+    protected $isSerialTrackable;
+
+    /**
+     * @var string
+     *
+     * @MS\Column(name="attributes():archived")
+     */
+    protected $archived;
+
+    /**
+     * @var string
+     *
+     * @MS\Column(name="attributes():readMode")
+     */
+    protected $readMode;
+
+    /**
+     * @var string
+     *
+     * @MS\Column(name="attributes():changeMode")
+     */
+    protected $changeMode;
+
+    /**
+     * @var string
+     *
+     * @MS\Column(name="attributes():uomUuid")
+     */
+    protected $uomUuid;
 
     /**
      * @var string
@@ -148,6 +204,134 @@ class Good implements EntityInterface
     public function __construct()
     {
         $this->salePrices = new \SplObjectStorage();
+    }
+
+    /**
+     * @param string $archived
+     */
+    public function setArchived($archived)
+    {
+        $this->archived = $archived;
+    }
+
+    /**
+     * @return string
+     */
+    public function getArchived()
+    {
+        return $this->archived;
+    }
+
+    /**
+     * @param string $changeMode
+     */
+    public function setChangeMode($changeMode)
+    {
+        $this->changeMode = $changeMode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChangeMode()
+    {
+        return $this->changeMode;
+    }
+
+    /**
+     * @param number $minimumBalance
+     */
+    public function setMinimumBalance($minimumBalance)
+    {
+        $this->minimumBalance = $minimumBalance;
+    }
+
+    /**
+     * @return number
+     */
+    public function getMinimumBalance()
+    {
+        return $this->minimumBalance;
+    }
+
+    /**
+     * @param string $readMode
+     */
+    public function setReadMode($readMode)
+    {
+        $this->readMode = $readMode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReadMode()
+    {
+        return $this->readMode;
+    }
+
+    /**
+     * @param number $volume
+     */
+    public function setVolume($volume)
+    {
+        $this->volume = $volume;
+    }
+
+    /**
+     * @return number
+     */
+    public function getVolume()
+    {
+        return $this->volume;
+    }
+
+    /**
+     * @param number $weight
+     */
+    public function setWeight($weight)
+    {
+        $this->weight = $weight;
+    }
+
+    /**
+     * @return number
+     */
+    public function getWeight()
+    {
+        return $this->weight;
+    }
+
+    /**
+     * @param string $uomUuid
+     */
+    public function setUomUuid($uomUuid)
+    {
+        $this->uomUuid = $uomUuid;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUomUuid()
+    {
+        return $this->uomUuid;
+    }
+
+    /**
+     * @param string $isSerialTrackable
+     */
+    public function setIsSerialTrackable($isSerialTrackable)
+    {
+        $this->isSerialTrackable = $isSerialTrackable;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIsSerialTrackable()
+    {
+        return $this->isSerialTrackable;
     }
 
     /**
