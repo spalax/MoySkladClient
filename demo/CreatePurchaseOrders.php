@@ -38,6 +38,15 @@ $purchaseOrderPosition->setReserve(10);
 
 $purchaseOrder->addOrderPosition($purchaseOrderPosition);
 
+$purchaseOrderPosition = new PurchaseOrder\Position();
+$purchaseOrderPosition->setGoodsUuid($goodEntity->getUuid());
+$purchaseOrderPosition->setPriceSum($goodEntity->getPrice());
+$purchaseOrderPosition->setPriceSumInCurrency($goodEntity->getPrice());
+$purchaseOrderPosition->setQuantity(10);
+$purchaseOrderPosition->setReserve(1);
+
+$purchaseOrder->addOrderPosition($purchaseOrderPosition);
+
 $entityManager->flush();
 
 /*---------------------------------------------------------------------------------*/

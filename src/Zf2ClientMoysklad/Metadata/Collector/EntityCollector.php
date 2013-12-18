@@ -103,6 +103,14 @@ class EntityCollector implements CollectorInterface
               }
             }
 
+            // It is required when property in entity isOneToMany but not a container,
+            // so in xml it is must be looks like, on example <entity> it is parent and <prop>
+            // it is many entries <entity><prop></prop><prop></prop></entity>. If this check will
+            // be removed then xml will be like <entity><prop><prop></prop></prop></entity>.
+            if (!$isContainer && $value instanceof \SimpleXMLElement) {
+                return $element->appendXMLElement($value);
+            }
+
             $tokens = explode(':', $fieldName);
             $el = $element;
 
@@ -282,6 +290,7 @@ class EntityCollector implements CollectorInterface
                                                                  false, $annotation->isContainer());
         $propertyArr['handler'] = $this->detectPropertyAdd($classScanner, $propertyScanner);
         $propertyArr['getter'] = $this->detectPropertyGet($classScanner, $propertyScanner);
+        $propertyArr['isContainer'] = $annotation->isContainer();
 
         $ref = new \ReflectionClass($classScanner->getName());
         if (!$ref->newInstance()->{$propertyArr['getter']}() instanceof \SplObjectStorage) {
