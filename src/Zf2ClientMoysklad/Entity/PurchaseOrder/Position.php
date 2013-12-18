@@ -35,7 +35,7 @@ class Position implements EntityInterface
     /**
      * @var number
      *
-     * @MS\Column(name="basePrice:attributes():sum", required="true")
+     * @MS\Column(name="basePrice:attributes():sum")
      */
     protected $basePriceSum;
 
@@ -49,7 +49,7 @@ class Position implements EntityInterface
     /**
      * @var number
      *
-     * @MS\Column(name="price:attributes():sum")
+     * @MS\Column(name="price:attributes():sum", required="true")
      */
     protected $priceSum;
 
