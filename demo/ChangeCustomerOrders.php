@@ -22,9 +22,13 @@ $repository = $entityManager->getRepository('Zf2ClientMoysklad\Entity\CustomerOr
 $customerOrders = $repository->findAll(array('externalCode = '=>array('22684')));
 
 foreach ($customerOrders as $orderEntity) {
+//    foreach($orderEntity->getAttribute() as $attribute) {
+//        $attribute->setEntityValueUuid('3f232ca5-7845-11e3-a1ae-002590a28eca');
+//    }
+
     foreach ($orderEntity->getOrderPosition() as $orderPosition) {
         /* @var CustomerOrder\Position $orderPosition */
-        $orderPosition->setQuantity(1199);
+        $orderPosition->setQuantity(rand(1,9999));
     }
     $entityManager->persist($orderEntity);
 }
