@@ -35,8 +35,8 @@ class EntityHydrator
                 $entityMetadata = $property->getTargetEntity();
                 $hydrator = new EntityHydrator($entityMetadata);
 
-                foreach ($value as $entity) {
-                    $xmlEntry = $hydrator->extract($entity);
+                foreach ($value as $valueEntity) {
+                    $xmlEntry = $hydrator->extract($valueEntity);
                     $serializer($xmlEntry, $xmlElement);
 
                     if (!$xmlEntry instanceof \SimpleXMLElement) {
