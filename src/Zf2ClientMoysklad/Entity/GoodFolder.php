@@ -44,6 +44,13 @@ class GoodFolder implements EntityInterface
     /**
      * @var string
      *
+     * @MS\Column(name="attributes():parentUuid")
+     */
+    protected $parentUuid;
+
+    /**
+     * @var string
+     *
      * @MS\Column(name="externalcode")
      */
     protected $externalCode;
@@ -101,6 +108,22 @@ class GoodFolder implements EntityInterface
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param string $parentUuid
+     */
+    public function setParentUuid($parentUuid)
+    {
+        $this->parentUuid = $parentUuid;
+    }
+
+    /**
+     * @return string
+     */
+    public function getParentUuid()
+    {
+        return $this->parentUuid;
     }
 
     /**
