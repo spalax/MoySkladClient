@@ -94,17 +94,9 @@ class CustomerOrder implements EntityInterface
      */
     protected $orderPosition;
 
-    /**
-     * @var \SplObjectStorage
-     *
-     * @MS\OneToMany(targetEntity="Zf2ClientMoysklad\Entity\CustomerOrder\Attribute", name="attribute")
-     */
-    protected $attribute;
-
     public function __construct()
     {
         $this->orderPosition = new \SplObjectStorage();
-        $this->attribute = new \SplObjectStorage();
     }
 
     /**
@@ -139,24 +131,6 @@ class CustomerOrder implements EntityInterface
     public function getOrderPosition()
     {
         return $this->orderPosition;
-    }
-
-    /**
-     * @param Attribute $attribute
-     */
-    public function addAttribute(Attribute $attribute)
-    {
-        if (!$this->attribute->contains($attribute)) {
-            $this->attribute->attach($attribute);
-        }
-    }
-
-    /**
-     * @return \SplObjectStorage
-     */
-    public function getAttribute()
-    {
-        return $this->attribute;
     }
 
     /**
